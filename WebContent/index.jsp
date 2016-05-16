@@ -9,10 +9,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div class="ui-input-btn ui-btn ui-icon-check ui-btn-icon-left ui-corner-all">
-		Submit
-		<input data-enhanced="true" type="submit" value="Submit" id="button-1"/>
+	<div class="ui-body-b ui-body">
+		<div data-role="navbar" id="navbar-1">
+			<ul>
+				<li><a href="${pageContext.request.contextPath}/api/gradjanin">Gradjanin</a></li>
+				<li><a href="#">Odbornik</a></li>
+				<li><a href="#">Predsednik</a></li>
+			</ul>
+		</div>
 	</div>
-
 </body>
 </html>

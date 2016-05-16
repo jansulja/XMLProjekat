@@ -21,22 +21,22 @@ public class AuthenticationInterceptor {
 		super();
 	}
 
-	private static Logger log = Logger.getLogger(AuthenticationInterceptor.class);
-
-	@Context
-	private HttpServletRequest request;
-
-	@AroundInvoke
-	public Object intercept(InvocationContext context) throws Exception{
-		User user = (User) request.getSession().getAttribute("user");
-		log.info("user: "+user);
-		if (user == null) {
-			throw new ServiceException("Not logged in", Status.UNAUTHORIZED);
-		}	
-		
-		Object result = context.proceed();
-		return result;
-	}
+//	private static Logger log = Logger.getLogger(AuthenticationInterceptor.class);
+//
+//	@Context
+//	private HttpServletRequest request;
+//
+//	@AroundInvoke
+//	public Object intercept(InvocationContext context) throws Exception{
+//		User user = (User) request.getSession().getAttribute("user");
+//		log.info("user: "+user);
+////		if (user == null) {
+////			throw new ServiceException("Not logged in", Status.UNAUTHORIZED);
+////		}	
+//		
+//		Object result = context.proceed();
+//		return result;
+//	}
 
 	
 

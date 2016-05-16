@@ -10,6 +10,7 @@
 		<class>rs.ac.uns.ftn.xws.entities.payments.Invoice</class>
 		<class>rs.ac.uns.ftn.xws.entities.payments.InvoiceItem</class>
 		<class>rs.ac.uns.ftn.xws.entities.users.User</class>
+		<class>model.Gradjanin</class>
 		
 		<properties>
 			
