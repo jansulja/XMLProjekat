@@ -1,15 +1,13 @@
 package model;
 
-import java.util.Date;
-
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "predsednik")
-@PrimaryKeyJoinColumn(name="GRADJANINID")
+@Table(name = "gradjanin")
+@DiscriminatorValue("P")
 public class Predsednik extends Odbornik{
 
 	

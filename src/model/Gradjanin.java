@@ -20,7 +20,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "gradjanin")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+    name="discriminator",
+    discriminatorType=DiscriminatorType.STRING
+)
+@DiscriminatorValue(value="G")
 public class Gradjanin implements Serializable{
 	/**
 	 * 

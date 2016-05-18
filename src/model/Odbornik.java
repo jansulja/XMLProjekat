@@ -2,16 +2,13 @@ package model;
 
 import java.io.Serializable;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "odbornik")
-@PrimaryKeyJoinColumn(name="GRADJANINID")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name = "gradjanin")
+@DiscriminatorValue("O")
 public class Odbornik extends Gradjanin implements Serializable{
 	
 	private String odbornickaGrupa;
