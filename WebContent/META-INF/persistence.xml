@@ -12,6 +12,7 @@
 		<class>rs.ac.uns.ftn.xws.entities.users.User</class>
 		<class>model.Gradjanin</class>
 		<class>model.Odbornik</class>
+		<class>model.Predsednik</class>
 		
 		<properties>
 			
