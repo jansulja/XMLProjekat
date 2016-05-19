@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.xws.interceptors;
+package interceptor;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -9,21 +9,19 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 
-
-
 import model.Gradjanin;
-import rs.ac.uns.ftn.xws.util.Authenticate;
 import rs.ac.uns.ftn.xws.util.ServiceException;
+import util.AuthenticateGradjanin;
 
 @Interceptor
-@Authenticate
-public class AuthenticationInterceptor {
+@AuthenticateGradjanin
+public class AuthenticationGradjaninInterceptor {
 
-	public AuthenticationInterceptor() {
+	public AuthenticationGradjaninInterceptor() {
 		super();
 	}
 
-	private static Logger log = Logger.getLogger(AuthenticationInterceptor.class);
+	private static Logger log = Logger.getLogger(AuthenticationGradjaninInterceptor.class);
 
 	@Context
 	private HttpServletRequest request;

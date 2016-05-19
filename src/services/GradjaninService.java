@@ -22,16 +22,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 
 import model.Gradjanin;
 import rs.ac.uns.ftn.xws.entities.payments.Invoice;
+import rs.ac.uns.ftn.xws.entities.users.User;
 import rs.ac.uns.ftn.xws.util.Authenticate;
+import rs.ac.uns.ftn.xws.util.ServiceException;
 import session.GradjaninDaoLocal;
 
 @Path("/gradjanin")
@@ -56,11 +60,60 @@ public class GradjaninService {
 	// return retVal;
 	// }
 
+	@GET 
+    @Path("login")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Gradjanin loginGet(@QueryParam("username") String username, @QueryParam("password") String password) {
+    	Gradjanin user = null;
+		try {
+        	user = gradjaninDao.login(username, password);
+        } catch (Exception e) {
+        	log.error(e.getMessage(), e);
+        }
+		if(user==null){
+			throw new ServiceException("Wrong username or password", Status.FORBIDDEN);
+		}
+		log.info("USER: "+user);
+    	return user;
+    }
+    
+	@POST
+    @Path("login")
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String login(Gradjanin sentUser) {
+    	Gradjanin user = null;
+		try {
+        	user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
+        } catch (Exception e) {
+        	log.error(e.getMessage(), e);
+        }
+		if(user==null){//ako ne uspe prijava posalje se greska 403 - znam sta hoces, ali ti ne dozvoljavam 
+			throw new ServiceException("Wrong username or password", Status.FORBIDDEN);
+		}
+    	return "ok";
+    }
+	
+	@GET
+    @Path("logout")
+    @Produces(MediaType.TEXT_HTML)
+    public String logout() {
+		try {
+			gradjaninDao.logout();
+        } catch (Exception e) {
+        	log.error(e.getMessage(), e);
+        }
+    	return "ok";
+    }
+	
+	
+	
 	@EJB
 	GradjaninDaoLocal gradjaninDao;
 
 	@GET 
     @Produces(MediaType.APPLICATION_JSON)
+	@Authenticate
 	public List<Gradjanin> findByAll() {
 		List<Gradjanin> retVal = null;
 		try {

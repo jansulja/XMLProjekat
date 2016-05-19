@@ -53,16 +53,16 @@ public class UserDao extends GenericDaoBean<User, Long> implements UserDaoLocal{
 //		}
 //		else
 //			return null;
-		User u = new User();
-		u.setId(1);
-		u.setDeleted(false);
-		u.setUsername("admin");
-		u.setPassword("admin");
-		u.setVersion(1);
+//		User u = new User();
+//		u.setId(1);
+//		u.setDeleted(false);
+//		u.setUsername("admin");
+//		u.setPassword("admin");
+//		u.setVersion(1);
+//		
+//		request.getSession().setAttribute("user", u);
 		
-		request.getSession().setAttribute("user", u);
-		
-		return u;
+		return null;
 	}
 	
 	@Override

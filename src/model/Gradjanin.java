@@ -69,24 +69,11 @@ public class Gradjanin implements Serializable{
 	
 	@Column(name = "EMAIL", unique = false)
 	private String email;
+	
+	@Column(name = "PASSWORD", unique = false)
+	private String password;
 
-	public Gradjanin(Integer id, String ime, String prezime, Integer brojlicne, Date datumrodjenja, String pol,
-			Integer jmbg, String mestoRodjenja, String opstinaRodjenja, String drzava, Integer brojTelefona,
-			String email) {
-		super();
-		this.id = id;
-		this.ime = ime;
-		this.prezime = prezime;
-		this.brojlicne = brojlicne;
-		this.datumrodjenja = datumrodjenja;
-		this.pol = pol;
-		this.jmbg = jmbg;
-		this.mestoRodjenja = mestoRodjenja;
-		this.opstinaRodjenja = opstinaRodjenja;
-		this.drzava = drzava;
-		this.brojTelefona = brojTelefona;
-		this.email = email;
-	}
+	
 
 	public Gradjanin() {
 		super();
@@ -179,6 +166,14 @@ public class Gradjanin implements Serializable{
 
 	public void setBrojTelefona(Integer brojTelefona) {
 		this.brojTelefona = brojTelefona;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {

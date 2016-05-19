@@ -17,28 +17,12 @@ public class Odbornik extends Gradjanin implements Serializable{
 	private String zvanje;
 	
 	
-	public Odbornik(Integer id, String ime, String prezime, Integer brojlicne, java.util.Date datumrodjenja, String pol,
-			Integer jmbg, String mestoRodjenja, String opstinaRodjenja, String drzava, Integer brojTelefona,
-			String email, Integer id2, String odbornickaGrupa, String stranka, double plata, String zvanje) {
-		super(id, ime, prezime, brojlicne, datumrodjenja, pol, jmbg, mestoRodjenja, opstinaRodjenja, drzava,
-				brojTelefona, email);
-		id = id2;
-		this.odbornickaGrupa = odbornickaGrupa;
-		this.stranka = stranka;
-		this.plata = plata;
-		this.zvanje = zvanje;
-	}
+	
 	public Odbornik() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Odbornik(Integer id, String ime, String prezime, Integer brojlicne, java.util.Date datumrodjenja, String pol,
-			Integer jmbg, String mestoRodjenja, String opstinaRodjenja, String drzava, Integer brojTelefona,
-			String email) {
-		super(id, ime, prezime, brojlicne, datumrodjenja, pol, jmbg, mestoRodjenja, opstinaRodjenja, drzava, brojTelefona,
-				email);
-		// TODO Auto-generated constructor stub
-	}
+	
 //	public Integer getId() {
 //		return id;
 //	}
