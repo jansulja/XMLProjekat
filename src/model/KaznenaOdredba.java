@@ -86,7 +86,7 @@ public class KaznenaOdredba {
 	@XmlElement(name = "Norma", required = true)
 	@ElementCollection
 	@CollectionTable(name = "norma", joinColumns = @JoinColumn(name = "kaznena_odredba_id"))
-	@Column(name = "definicija")
+	@Column(name = "norma")
 	protected List<String> norma;
 
   
