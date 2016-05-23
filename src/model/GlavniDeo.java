@@ -13,10 +13,13 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -50,6 +53,8 @@ import javax.xml.bind.annotation.XmlType;
     "ovlascenje",
     "kaznenaOdredba"
 })
+@Entity
+@Table(name = "glavni_deo")
 public class GlavniDeo {
 
 	@Id
@@ -61,9 +66,15 @@ public class GlavniDeo {
     protected String pravaIObaveze;
 
     @XmlElement(name = "Ovlascenje", required = true)
-    @OneToMany(cascade = {CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "glavniDeo")
+    @OneToMany(cascade={CascadeType.ALL})
+    @JoinColumn(name="glavni_deo_id")
+    //@IndexColumn(name="idx") - Potreban ako je bitan redosled 
     protected List<Ovlascenje> ovlascenje;
+   
+    
     @XmlElement(name = "Kaznena_odredba")
+    @OneToMany(cascade={CascadeType.ALL})
+    @JoinColumn(name="glavni_deo_id")
     protected List<KaznenaOdredba> kaznenaOdredba;
 
     /**
