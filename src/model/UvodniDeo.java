@@ -14,20 +14,17 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * <p>
@@ -81,8 +78,8 @@ public class UvodniDeo {
 	@XmlElement(name = "Predmet_uredjivanja", required = true)
 	protected String predmetUredjivanja;
 	@XmlElement(name = "Definicija")
-	@ElementCollection
-	@CollectionTable(name = "Definicija", joinColumns = @JoinColumn(name = "akt_id"))
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "Definicija", joinColumns = @JoinColumn(name = "uvodni_deo_id"))
 	@Column(name = "definicija")
 	protected List<String> definicija;
 	@XmlAttribute(name = "naziv")

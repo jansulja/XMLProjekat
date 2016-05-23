@@ -70,10 +70,10 @@ public class Akt {
 	@OneToOne
 	@JoinColumn(name="uvodni_deo_id")
 	private UvodniDeo uvodniDeo;
-	@XmlElement(name = "Glavni_deo", required = true)
-    @OneToOne
-	@JoinColumn(name="glavni_deo_id")
-	 protected GlavniDeo glavniDeo;
+//	@XmlElement(name = "Glavni_deo", required = true)
+//    @OneToOne
+//	@JoinColumn(name="glavni_deo_id")
+//	 protected GlavniDeo glavniDeo;
 	// @XmlElement(name = "Zavrsni_deo", required = true)
 	// //@OneToOne(mappedBy="akt", cascade=CascadeType.ALL)
 	// protected ZavrsniDeo zavrsniDeo;
