@@ -48,9 +48,9 @@ public class ContextClass implements ServletContextListener {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+//		
 //		try {
-//			//gradjaninDao.persist(gAdmin);
+//			gradjaninDao.persist(gAdmin);
 //		} catch (NoSuchFieldException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
