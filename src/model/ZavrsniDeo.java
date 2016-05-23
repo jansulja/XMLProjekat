@@ -67,11 +67,11 @@ public class ZavrsniDeo {
     @XmlElement(name = "Zavrsne_odredbe", required = true)
     protected String zavrsneOdredbe;
     
-    @XmlAttribute(name = "datum", required = true)
+    @XmlAttribute(name = "Datum", required = true)
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar datum;
     
-    @XmlAttribute(name = "broj_propisa", required = true)
+    @XmlAttribute(name = "Broj_propisa", required = true)
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger brojPropisa;
 
