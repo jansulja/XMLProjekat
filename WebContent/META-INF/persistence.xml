@@ -13,6 +13,8 @@
 		<class>model.Gradjanin</class>
 		<class>model.Odbornik</class>
 		<class>model.Predsednik</class>
+		<class>model.Akt</class>
+		<class>model.UvodniDeo</class>
 		
 		<properties>
 			

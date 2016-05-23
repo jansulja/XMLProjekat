@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Table(name = "gradjanin")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-    name="discriminator",
+    name="role",
     discriminatorType=DiscriminatorType.STRING
 )
 @DiscriminatorValue(value="G")
@@ -73,7 +73,16 @@ public class Gradjanin implements Serializable{
 	@Column(name = "PASSWORD", unique = false)
 	private String password;
 
-	
+	@Column(name = "role", insertable = false, updatable = false)
+    private String role;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Gradjanin() {
 		super();

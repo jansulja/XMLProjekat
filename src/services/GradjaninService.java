@@ -37,6 +37,7 @@ import rs.ac.uns.ftn.xws.entities.users.User;
 import rs.ac.uns.ftn.xws.util.Authenticate;
 import rs.ac.uns.ftn.xws.util.ServiceException;
 import session.GradjaninDaoLocal;
+import session.OdbornikDaoLocal;
 
 @Path("/gradjanin")
 public class GradjaninService {
@@ -60,13 +61,33 @@ public class GradjaninService {
 	// return retVal;
 	// }
 
+	@Context
+	private HttpServletRequest request;
+	
+	@EJB
+	OdbornikDaoLocal odbornikDao;
+	
+	@GET
+    @Path("current")
+    @Produces(MediaType.APPLICATION_JSON)
+	public Object getCurrentUser(){
+		
+		return request.getSession().getAttribute("user");
+		
+	}
+	
 	@GET 
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Gradjanin loginGet(@QueryParam("username") String username, @QueryParam("password") String password) {
+    public Object loginGet(@QueryParam("username") String username, @QueryParam("password") String password) {
     	Gradjanin user = null;
 		try {
-        	user = gradjaninDao.login(username, password);
+			user = odbornikDao.login(username, password);
+			
+			if(user == null){
+				
+				user = gradjaninDao.login(username, password);
+			}
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
@@ -79,19 +100,26 @@ public class GradjaninService {
     
 	@POST
     @Path("login")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String login(Gradjanin sentUser) {
+    public Object login(Gradjanin sentUser) {
     	Gradjanin user = null;
 		try {
-        	user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
+				user = odbornikDao.login(sentUser.getEmail(), sentUser.getPassword());
+			
+				if(user == null){
+					
+					user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
+				}
+				
+				
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
 		if(user==null){//ako ne uspe prijava posalje se greska 403 - znam sta hoces, ali ti ne dozvoljavam 
 			throw new ServiceException("Wrong username or password", Status.FORBIDDEN);
 		}
-    	return "ok";
+    	return user;
     }
 	
 	@GET

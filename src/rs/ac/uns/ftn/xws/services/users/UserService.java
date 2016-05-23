@@ -24,6 +24,8 @@ public class UserService {
 	@EJB
 	private UserDaoLocal userDao;
 
+
+	
 	@GET 
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
