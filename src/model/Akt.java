@@ -78,6 +78,31 @@ public class Akt {
 	// //@OneToOne(mappedBy="akt", cascade=CascadeType.ALL)
 	// protected ZavrsniDeo zavrsniDeo;
 
+	@XmlElement(name = "Glavni_deo", required = true)
+	@OneToOne
+	@JoinColumn(name="glavni_deo_id")
+	private GlavniDeo glavniDeo;
+	
+	public GlavniDeo getGlavniDeo() {
+		return glavniDeo;
+	}
+
+	public void setGlavniDeo(GlavniDeo glavniDeo) {
+		this.glavniDeo = glavniDeo;
+	}
+
+	public ZavrsniDeo getZavrsniDeo() {
+		return zavrsniDeo;
+	}
+
+	public void setZavrsniDeo(ZavrsniDeo zavrsniDeo) {
+		this.zavrsniDeo = zavrsniDeo;
+	}
+
+	@XmlElement(name = "Zavrsni_deo", required = true)
+	@OneToOne
+	@JoinColumn(name="zavrsni_deo_id")
+	private ZavrsniDeo zavrsniDeo;
 	/**
 	 * Gets the value of the naziv property.
 	 * 
