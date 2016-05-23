@@ -9,6 +9,12 @@
 package model;
 
 import java.math.BigInteger;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -45,15 +51,26 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "prelazneOdredbe",
     "zavrsneOdredbe"
 })
-public class ZavrsniDeo {
+@Entity
+@Table(name = "zavrsni_deo")
 
+public class ZavrsniDeo {
+	
+	@Id
+	@Column (name = "zavrsni_deo_id")
+	@GeneratedValue
+	private Integer id;
+	
     @XmlElement(name = "Prelazne_odredbe", required = true)
     protected String prelazneOdredbe;
+    
     @XmlElement(name = "Zavrsne_odredbe", required = true)
     protected String zavrsneOdredbe;
+    
     @XmlAttribute(name = "datum", required = true)
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar datum;
+    
     @XmlAttribute(name = "broj_propisa", required = true)
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger brojPropisa;

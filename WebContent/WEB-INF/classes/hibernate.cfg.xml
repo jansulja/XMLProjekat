@@ -9,6 +9,10 @@
   
 	    <mapping class="model.UvodniDeo"/>
 	    <mapping class="model.Akt"/>
+	    <mapping class="model.GlavniDeo"/>
+	    <mapping class="model.Ovlascenje"/>
+	    <mapping class="model.KaznenaOdredba"/>
+	    <mapping class="model.KaznjivaRadnjaISankcija"/>
           
     </session-factory>
 </hibernate-configuration>

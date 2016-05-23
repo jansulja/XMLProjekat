@@ -96,8 +96,6 @@ public class ObjectFactory {
      * Create an instance of {@link KaznenaOdredba.Propis }
      * 
      */
-    public KaznenaOdredba.Propis createKaznenaOdredbaPropis() {
-        return new KaznenaOdredba.Propis();
-    }
+   
 
 }

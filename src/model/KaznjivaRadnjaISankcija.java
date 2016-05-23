@@ -8,6 +8,11 @@
 
 package model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,7 +44,14 @@ import javax.xml.bind.annotation.XmlType;
     "kaznjivaRadnja",
     "sankcija"
 })
+@Entity
+@Table(name = "kaznjiva_radnja_i_sankcija")
 public class KaznjivaRadnjaISankcija {
+	
+	@Id
+	@Column(name = "kaznjiva_radnja_i_sankcija_id")
+	@GeneratedValue
+	private Integer id;
 
     @XmlElement(name = "Kaznjiva_radnja", required = true)
     protected String kaznjivaRadnja;
