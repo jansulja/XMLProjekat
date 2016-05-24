@@ -9,6 +9,7 @@
 package model;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,7 +70,7 @@ public class ZavrsniDeo {
     
     @XmlAttribute(name = "datum", required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar datum;
+    protected Date datum;
     
     @XmlAttribute(name = "broj_propisa", required = true)
     @XmlSchemaType(name = "positiveInteger")
@@ -131,7 +132,7 @@ public class ZavrsniDeo {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public XMLGregorianCalendar getDatum() {
+    public Date getDatum() {
         return datum;
     }
 
@@ -143,7 +144,7 @@ public class ZavrsniDeo {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDatum(XMLGregorianCalendar value) {
+    public void setDatum(Date value) {
         this.datum = value;
     }
 

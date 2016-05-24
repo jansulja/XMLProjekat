@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * <p>Java class for Ovlascenje complex type.
@@ -69,9 +71,32 @@ public class Ovlascenje {
     protected BigInteger periodVazenja;
 
     @ManyToOne
-	@JoinColumn(name = "glavni_deo_id", referencedColumnName = "glavni_deo_id", nullable = false)
+	@JoinColumn(name = "glavni_deo_id")
+    @JsonIgnore
 	private GlavniDeo glavniDeo;
-    /**
+    
+    
+    
+    
+    public Ovlascenje() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+    
+    
+	public Ovlascenje(Integer id, String ovlasceniOrgan, String obim, BigInteger periodVazenja, GlavniDeo glavniDeo) {
+		super();
+		this.id = id;
+		this.ovlasceniOrgan = ovlasceniOrgan;
+		this.obim = obim;
+		this.periodVazenja = periodVazenja;
+		this.glavniDeo = glavniDeo;
+	}
+
+
+
+	/**
      * Gets the value of the ovlasceniOrgan property.
      * 
      * @return

@@ -9,7 +9,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +26,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 
 /**
@@ -66,16 +71,18 @@ public class GlavniDeo {
     protected String pravaIObaveze;
 
     @XmlElement(name = "Ovlascenje", required = true)
-    @OneToMany(cascade={CascadeType.ALL})
-    @JoinColumn(name="glavni_deo_id")
+    @OneToMany(mappedBy="glavniDeo",fetch = FetchType.EAGER)
+    //@JoinColumn(name="glavni_deo_id")
+   
     //@IndexColumn(name="idx") - Potreban ako je bitan redosled 
-    protected List<Ovlascenje> ovlascenje;
+    protected Set<Ovlascenje> ovlascenje;
    
     
     @XmlElement(name = "Kaznena_odredba")
-    @OneToMany(cascade={CascadeType.ALL})
-    @JoinColumn(name="glavni_deo_id")
-    protected List<KaznenaOdredba> kaznenaOdredba;
+//    @OneToMany(cascade={CascadeType.ALL})
+//    @JoinColumn(name="glavni_deo_id")
+    @OneToMany(mappedBy="glavniDeo",fetch = FetchType.EAGER)
+    protected Set<KaznenaOdredba> kaznenaOdredba;
 
     /**
      * Gets the value of the pravaIObaveze property.
@@ -123,9 +130,9 @@ public class GlavniDeo {
      * 
      * 
      */
-    public List<Ovlascenje> getOvlascenje() {
+    public Set<Ovlascenje> getOvlascenje() {
         if (ovlascenje == null) {
-            ovlascenje = new ArrayList<Ovlascenje>();
+            ovlascenje = new HashSet<Ovlascenje>();
         }
         return this.ovlascenje;
     }
@@ -152,9 +159,9 @@ public class GlavniDeo {
      * 
      * 
      */
-    public List<KaznenaOdredba> getKaznenaOdredba() {
+    public Set<KaznenaOdredba> getKaznenaOdredba() {
         if (kaznenaOdredba == null) {
-            kaznenaOdredba = new ArrayList<KaznenaOdredba>();
+            kaznenaOdredba = new HashSet<KaznenaOdredba>();
         }
         return this.kaznenaOdredba;
     }

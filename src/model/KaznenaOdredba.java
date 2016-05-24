@@ -9,22 +9,27 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -84,7 +89,7 @@ public class KaznenaOdredba {
 	
 	
 	@XmlElement(name = "Norma", required = true)
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "norma", joinColumns = @JoinColumn(name = "kaznena_odredba_id"))
 	@Column(name = "definicija")
 	protected List<String> norma;
@@ -92,15 +97,21 @@ public class KaznenaOdredba {
   
     
     @XmlElement(name = "Kaznjiva_radnja_i_sankcija", required = true)
-    @OneToMany(cascade={CascadeType.ALL})
-    @JoinColumn(name="kaznena_odredba_id")
-    protected List<KaznjivaRadnjaISankcija> kaznjivaRadnjaISankcija;
+//    @OneToMany(cascade={CascadeType.ALL})
+//    @JoinColumn(name="kaznena_odredba_id")
+    @OneToMany(mappedBy="kaznenaOdredba",fetch = FetchType.EAGER)
+    protected Set<KaznjivaRadnjaISankcija> kaznjivaRadnjaISankcija;
    
     @XmlElement(name = "Bice_dela", required = true)
     protected String biceDela;
     @XmlElement(name = "Subjekt_odgovornosti", required = true)
     protected String subjektOdgovornosti;
 
+    @ManyToOne
+	@JoinColumn(name = "glavni_deo_id", referencedColumnName = "glavni_deo_id", nullable = false)
+    @JsonIgnore
+	private GlavniDeo glavniDeo;
+    
     /**
      * Gets the value of the propis property.
      * 
@@ -143,9 +154,9 @@ public class KaznenaOdredba {
      * 
      * 
      */
-    public List<KaznjivaRadnjaISankcija> getKaznjivaRadnjaISankcija() {
+    public Set<KaznjivaRadnjaISankcija> getKaznjivaRadnjaISankcija() {
         if (kaznjivaRadnjaISankcija == null) {
-            kaznjivaRadnjaISankcija = new ArrayList<KaznjivaRadnjaISankcija>();
+            kaznjivaRadnjaISankcija = new HashSet<KaznjivaRadnjaISankcija>();
         }
         return this.kaznjivaRadnjaISankcija;
     }
