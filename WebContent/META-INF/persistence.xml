@@ -19,6 +19,7 @@
 		<class>model.Ovlascenje</class>
 		<class>model.KaznenaOdredba</class>
 		<class>model.KaznjivaRadnjaISankcija</class>
+		<class>model.ZavrsniDeo</class>
 		
 		<properties>
 			
