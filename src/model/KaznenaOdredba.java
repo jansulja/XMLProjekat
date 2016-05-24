@@ -91,7 +91,7 @@ public class KaznenaOdredba {
 	@XmlElement(name = "Norma", required = true)
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "norma", joinColumns = @JoinColumn(name = "kaznena_odredba_id"))
-	@Column(name = "definicija")
+	@Column(name = "norma")
 	protected List<String> norma;
 
   
