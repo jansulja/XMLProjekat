@@ -14,6 +14,8 @@ import model.Akt;
 import model.Gradjanin;
 import rs.ac.uns.ftn.xws.util.Authenticate;
 import session.AktDaoLocal;
+import util.AuthenticateGradjanin;
+import util.AuthenticateOdbornik;
 
 @Path("/akt")
 public class AktService {
@@ -26,6 +28,7 @@ public class AktService {
 
 	@GET 
     @Produces(MediaType.APPLICATION_JSON)
+	@AuthenticateGradjanin
 	public List<Akt> findByAll() {
 		List<Akt> retVal = null;
 		try {

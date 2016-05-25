@@ -9,19 +9,19 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 
-import model.Gradjanin;
+import model.Odbornik;
 import rs.ac.uns.ftn.xws.util.ServiceException;
-import util.AuthenticateGradjanin;
+import util.AuthenticateOdbornik;
 
 @Interceptor
-@AuthenticateGradjanin
-public class AuthenticationGradjaninInterceptor {
+@AuthenticateOdbornik
+public class AuthenticationOdbornikInterceptor {
 
-	public AuthenticationGradjaninInterceptor() {
+	public AuthenticationOdbornikInterceptor() {
 		super();
 	}
 
-	private static Logger log = Logger.getLogger(AuthenticationGradjaninInterceptor.class);
+	private static Logger log = Logger.getLogger(AuthenticationOdbornikInterceptor.class);
 
 	@Context
 	private HttpServletRequest request;
@@ -32,7 +32,7 @@ public class AuthenticationGradjaninInterceptor {
 		log.info("user: "+user);
 		if (user == null) {
 			throw new ServiceException("Not logged in", Status.UNAUTHORIZED);
-		}else if(!(user instanceof Gradjanin)){
+		}else if(!(user instanceof Odbornik)){
 			throw new ServiceException("Not allowed", Status.UNAUTHORIZED);
 		}	
 		
