@@ -4,5 +4,6 @@
 	<interceptors>
     	<class>rs.ac.uns.ftn.xws.interceptors.AuthenticationInterceptor</class>
     	<class>interceptor.AuthenticationGradjaninInterceptor</class>
+    	<class>interceptor.AuthenticationOdbornikInterceptor</class>
 	</interceptors>
 </beans>

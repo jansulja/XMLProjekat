@@ -38,6 +38,7 @@ import rs.ac.uns.ftn.xws.util.Authenticate;
 import rs.ac.uns.ftn.xws.util.ServiceException;
 import session.GradjaninDaoLocal;
 import session.OdbornikDaoLocal;
+import util.AuthenticateOdbornik;
 
 @Path("/gradjanin")
 public class GradjaninService {
@@ -142,6 +143,7 @@ public class GradjaninService {
 	@GET 
     @Produces(MediaType.APPLICATION_JSON)
 	@Authenticate
+	@AuthenticateOdbornik
 	public List<Gradjanin> findByAll() {
 		List<Gradjanin> retVal = null;
 		try {
@@ -152,19 +154,19 @@ public class GradjaninService {
 		return retVal;
     }
 	
-	@GET 
-	@Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-	@Authenticate
-    public Gradjanin findById(@PathParam("id") String id) {
-		Gradjanin retVal = null;
-		try {
-			retVal = gradjaninDao.findById(Integer.parseInt(id));
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return retVal;
-    }
+//	@GET 
+//	@Path("{id}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//	@Authenticate
+//    public Gradjanin findById(@PathParam("id") String id) {
+//		Gradjanin retVal = null;
+//		try {
+//			retVal = gradjaninDao.findById(Integer.parseInt(id));
+//		} catch (Exception e) {
+//			log.error(e.getMessage(), e);
+//		}
+//		return retVal;
+//    }
 	
 	@POST
     @Consumes(MediaType.APPLICATION_JSON)

@@ -14,28 +14,23 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for Deo complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="Deo">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice>
- *         &lt;sequence>
- *           &lt;element name="Deo" type="{}Deo" maxOccurs="unbounded" minOccurs="2"/>
- *         &lt;/sequence>
- *         &lt;sequence>
- *           &lt;element name="Glava" type="{}Glava" maxOccurs="unbounded" minOccurs="2"/>
- *         &lt;/sequence>
- *       &lt;/choice>
- *       &lt;attribute name="status" type="{}Status" default="PREDLOZEN" />
+ *       &lt;sequence>
+ *         &lt;element name="Naziv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="Glava" type="{}Glava" maxOccurs="unbounded" minOccurs="2"/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="redni_broj" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,47 +39,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "deo",
+@XmlType(name = "Deo", propOrder = {
+    "naziv",
     "glava"
 })
-@XmlRootElement(name = "Akt")
-public class Akt {
+public class Deo {
 
-    @XmlElement(name = "Deo")
-    protected List<Deo> deo;
-    @XmlElement(name = "Glava")
+    @XmlElement(name = "Naziv")
+    protected String naziv;
+    @XmlElement(name = "Glava", required = true)
     protected List<Glava> glava;
-    @XmlAttribute(name = "status")
-    protected Status status;
+    @XmlAttribute(name = "redni_broj")
+    protected String redniBroj;
 
     /**
-     * Gets the value of the deo property.
+     * Gets the value of the naziv property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the deo property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDeo().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Deo }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<Deo> getDeo() {
-        if (deo == null) {
-            deo = new ArrayList<Deo>();
-        }
-        return this.deo;
+    public String getNaziv() {
+        return naziv;
+    }
+
+    /**
+     * Sets the value of the naziv property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNaziv(String value) {
+        this.naziv = value;
     }
 
     /**
@@ -117,31 +106,27 @@ public class Akt {
     }
 
     /**
-     * Gets the value of the status property.
+     * Gets the value of the redniBroj property.
      * 
      * @return
      *     possible object is
-     *     {@link Status }
+     *     {@link String }
      *     
      */
-    public Status getStatus() {
-        if (status == null) {
-            return Status.PREDLOZEN;
-        } else {
-            return status;
-        }
+    public String getRedniBroj() {
+        return redniBroj;
     }
 
     /**
-     * Sets the value of the status property.
+     * Sets the value of the redniBroj property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Status }
+     *     {@link String }
      *     
      */
-    public void setStatus(Status value) {
-        this.status = value;
+    public void setRedniBroj(String value) {
+        this.redniBroj = value;
     }
 
 }

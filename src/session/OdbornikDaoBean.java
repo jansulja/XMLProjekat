@@ -10,6 +10,8 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
+import org.apache.log4j.Logger;
+
 import init.ContextClass;
 import model.Gradjanin;
 import model.Odbornik;
@@ -22,6 +24,8 @@ public class OdbornikDaoBean extends GenericDaoBean<Odbornik, Integer> implement
 	@Context
 	private HttpServletRequest request;
 
+	private static Logger log = Logger.getLogger(OdbornikDaoBean.class);
+	
 	@Override
 	public Odbornik login(String username, String password)
 			throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -37,6 +41,7 @@ public class OdbornikDaoBean extends GenericDaoBean<Odbornik, Integer> implement
 		List<Odbornik> users = q.getResultList();
 		if (users.size() == 1) {
 			request.getSession().setAttribute("user", users.get(0));
+			log.info("Ulogovan odbornik: " + users.get(0).toString());
 			return users.get(0);
 		} else
 			return null;

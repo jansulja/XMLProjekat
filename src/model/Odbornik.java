@@ -53,6 +53,14 @@ public class Odbornik extends Gradjanin implements Serializable{
 	public void setZvanje(String zvanje) {
 		this.zvanje = zvanje;
 	}
+
+	@Override
+	public String toString() {
+		return "Odbornik [odbornickaGrupa=" + odbornickaGrupa + ", stranka=" + stranka + ", plata=" + plata
+				+ ", zvanje=" + zvanje + ", " + super.toString() + "]";
+	}
+
+	
 	
 	
 	
