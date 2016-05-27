@@ -13,13 +13,6 @@
 		<class>model.Gradjanin</class>
 		<class>model.Odbornik</class>
 		<class>model.Predsednik</class>
-		<class>model.Akt</class>
-		<class>model.UvodniDeo</class>
-		<class>model.GlavniDeo</class>
-		<class>model.Ovlascenje</class>
-		<class>model.KaznenaOdredba</class>
-		<class>model.KaznjivaRadnjaISankcija</class>
-		<class>model.ZavrsniDeo</class>
 		
 		<properties>
 			
