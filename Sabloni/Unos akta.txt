@@ -29,7 +29,7 @@ Akt
 	ZavrsniDeo[
 		-Zavrsni_deo.Prelazne_odredbe
 		-Zavrsni_deo.Zavrsne_odredbe
-		-Zavrsni_deo.datum
+		-Zavrsni_deo.Datum
 		-Zavrsni_deo.Broj_propisa
 	]
 
