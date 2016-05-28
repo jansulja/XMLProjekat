@@ -20,7 +20,7 @@ import model.Tacka;
 
  
 /** 
- * 
+ * komentar
  * Primer demonstrira "unmarshalling" tj. konverziju iz XML fajla
  * u objektni model i nazad.
  * 
