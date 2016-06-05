@@ -10,6 +10,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -45,12 +47,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
+	"id",	
     "deo",
     "glava"
 })
 @XmlRootElement(name = "Akt")
 public class Akt {
-
+	@XmlElement(name = "Id")
+	protected Integer id;
     @XmlElement(name = "Deo")
     protected List<Deo> deo;
     @XmlElement(name = "Glava")
@@ -142,6 +146,55 @@ public class Akt {
      */
     public void setStatus(Status value) {
         this.status = value;
+    }
+    
+    
+    
+    public void setDeo(List<Deo> deo) {
+		this.deo = deo;
+	}
+
+	public void setGlava(List<Glava> glava) {
+		this.glava = glava;
+	}
+
+	
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public static Akt getDummy(){
+    	
+    	Akt a1 = new Akt();
+    	
+    	Random rand = new Random();
+    	
+    	a1.setId(rand.nextInt(10000));
+    	a1.setStatus(Status.PREDLOZEN);
+    	
+    	
+    	Glava g1 = new Glava();
+    	g1.setNaziv("glava 1");
+    	g1.setRedniBroj("glava prva");
+    	
+    	
+    	Glava g2 = new Glava();
+    	g1.setNaziv("glava 2");
+    	g1.setRedniBroj("glava druga");
+    	
+    	List<Glava> glave = new ArrayList<Glava>();
+    	glave.add(g1);
+    	glave.add(g2);
+    	
+    	a1.setGlava(glave);
+    	
+    	
+    	return a1;
     }
 
 }
