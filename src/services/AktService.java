@@ -82,7 +82,7 @@ import session.AktDaoLocal;
 @Path("/akt")
 public class AktService {
 	
-	private static final String KEY_STORE_FILE = "C:/Users/Windows7/git/XMLProjekat/data/sgns.jks";
+	private static final String KEY_STORE_FILE = "C:/Users/Shuky/sgns.jks";
 	private static final String AKT = "./Sabloni/aktPrimer1.xml";
 	private static Logger log = Logger.getLogger(Gradjanin.class);
 	static {
@@ -103,7 +103,7 @@ public class AktService {
 	@Consumes(MediaType.APPLICATION_XML)
 	public String predloziAkt(String akt){
 		
-		InputStream stream = new ByteArrayInputStream(akt.getBytes(StandardCharsets.UTF_8));
+		//InputStream stream = new ByteArrayInputStream(akt.getBytes(StandardCharsets.UTF_8));
 		
 		log.info("REST String: " + akt);
 		System.out.println("dakaka");
@@ -112,14 +112,18 @@ public class AktService {
 		Odbornik gr = (Odbornik)request.getSession().getAttribute("user");
 		//System.out.println(gr.getEmail());
 		
+		
+		String signedXml = null;
 		try {
-			runIt(gr.getEmail(), akt);
+			signedXml = runIt(gr.getEmail(), akt);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//insertDocument("/akti/"+(String.valueOf(rand.nextInt(10000))) + ".xml", stream);
+		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
+		
+		insertDocument("/akti/"+(String.valueOf(rand.nextInt(10000))) + ".xml", stream);
 		
 		return "ok";
 		
@@ -480,7 +484,7 @@ public class AktService {
 		
 
 	}
-	private void runIt(String userPass, String akt) throws JAXBException {
+	private String runIt(String userPass, String akt) throws JAXBException {
 		//Document doc = loadDocument(AKT);
 		System.out.println(userPass);
 		Certificate cert = readCertificate(userPass, "sgns") ;
@@ -495,7 +499,7 @@ public class AktService {
 		String singString = saveDocument(singDoc);
 		System.out.println(singString);
 		
-		
+		return singString;
 
 	}
 	public static void main(String[] args) {
