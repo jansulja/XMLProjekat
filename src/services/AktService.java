@@ -78,6 +78,8 @@ import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
 import session.AktDaoLocal;
+import xml.encryption.DecryptKEK;
+import xml.encryption.EncryptKEK;
 
 @Path("/akt")
 public class AktService {
@@ -120,6 +122,14 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+		EncryptKEK encrypt = new EncryptKEK();
+		Document doc =  encrypt.testIt(signedXml);
+		
+		DecryptKEK decrypt = new DecryptKEK();
+		decrypt.testIt(doc);
+		
 		
 		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
 		
