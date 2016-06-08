@@ -168,4 +168,14 @@ public class Glava {
         this.redniBroj = value;
     }
 
+	public void setOdeljak(List<Odeljak> odeljak) {
+		this.odeljak = odeljak;
+	}
+
+	public void setClan(List<Clan> clan) {
+		this.clan = clan;
+	}
+
+    
+    
 }

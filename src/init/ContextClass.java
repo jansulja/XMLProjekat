@@ -33,12 +33,12 @@ public class ContextClass implements ServletContextListener {
 
 		Gradjanin gAdmin = new Gradjanin();
 		
-		gAdmin.setIme("Admin");
+		gAdmin.setIme("Gradjanin1");
 		gAdmin.setBrojlicne(0123456);
 		gAdmin.setBrojTelefona(063321546);
 		gAdmin.setDatumrodjenja(new Date(1990, 3, 5));
 		gAdmin.setDrzava("Srbija");
-		gAdmin.setEmail("admin@admin.com");
+		gAdmin.setEmail("g1@g1.com");
 		gAdmin.setJMBG(465789746);
 		gAdmin.setMestoRodjenja("Novi Sad");
 		gAdmin.setOpstinaRodjenja("Novi Sad");
@@ -65,7 +65,7 @@ public class ContextClass implements ServletContextListener {
 		
 		
 		try {
-			gAdmin.setPassword(getPasswordHash("admin"));
+			gAdmin.setPassword(getPasswordHash("g1"));
 			o1.setPassword(getPasswordHash("o1"));
 		} catch (NoSuchAlgorithmException e1) {
 			// TODO Auto-generated catch block
@@ -74,9 +74,9 @@ public class ContextClass implements ServletContextListener {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-//		
+		
 //		try {
-
+//
 //			odbornikDao.persist(o1);
 //		} catch (NoSuchFieldException e) {
 //			// TODO Auto-generated catch block

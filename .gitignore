@@ -1,6 +1,5 @@
 /build/
 /.settings/
-/src/log4j.properties
 /login.properties
 /bin/
 /bin/
