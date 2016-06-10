@@ -7,13 +7,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -25,6 +22,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -61,6 +59,7 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.codehaus.jettison.json.JSONArray;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,9 +71,12 @@ import com.marklogic.client.DatabaseClientFactory;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.InputStreamHandle;
+import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.query.MatchDocumentSummary;
+import com.marklogic.client.query.QueryManager;
+import com.marklogic.client.query.StringQueryDefinition;
 
 import database.Config;
-import jdk.internal.org.xml.sax.InputSource;
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
@@ -84,13 +86,12 @@ import xml.encryption.EncryptKEK;
 
 @Path("/akt")
 public class AktService {
-<<<<<<< HEAD
+	ArrayList<String> listaUrija = new ArrayList<String>();
+	ArrayList<String> listaRednihBrojeva = new ArrayList<String>();
 	
 	private static final String KEY_STORE_FILE = "C:/Users/Filipo/sgns.jks";
-=======
 
-	private static final String KEY_STORE_FILE = "C:/Users/Shuky/sgns.jks";
->>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
+
 	private static final String AKT = "./Sabloni/aktPrimer1.xml";
 	private static Logger log = Logger.getLogger(Gradjanin.class);
 	static {
@@ -103,8 +104,6 @@ public class AktService {
 
 	@Context
 	private HttpServletRequest request ;
-
-<<<<<<< HEAD
 	
 	@GET 
     @Produces(MediaType.APPLICATION_XML)
@@ -113,34 +112,82 @@ public class AktService {
 		// create the client
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
 		
+//Ovce pocinje trazenje svih akata iz baze-------------------------------------------
+		// create a manager for searching
+		QueryManager queryMgr = client.newQueryManager();
+
+		// create a search definition
+		StringQueryDefinition query = queryMgr.newStringDefinition();
+				
+		// Restrict the search to a specific directory
+		query.setDirectory("/akti/");
+				
+		// empty search defaults to returning all results
+		query.setCriteria("");
+
+		// create a handle for the search results
+		SearchHandle resultsHandle = new SearchHandle();
+
+		// run the search
+		queryMgr.search(query, resultsHandle);
+
+	    // Format the results
+		// Get the list of matching documents in this page of results
+		MatchDocumentSummary[] results = resultsHandle.getMatchResults();
+				
+		System.out.println("Listing " + results.length + " documents:");
+				
+		// List the URI of each matching document
+			for (MatchDocumentSummary result : results) {
+				listaUrija.add(result.getUri());
+			//	System.out.println(result.getUri());
+			}
+			
+//		for(String s:listaUrija){
+//			System.out.println(s);
+//		}
+			
+//ovde pocinje citanje svakog dokumenta posebno uz pomoc urij-a
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
-		
+			
 		// create a handle to receive the document content
 		DOMHandle handle = new DOMHandle();
 		
-	
 		// read the document content
-		docMgr.read("/akti/6049.xml", handle);
+		String redniBroj;
+		
+		for(String s:listaUrija){
 
+			docMgr.read(s, handle);
+			Document document = handle.get();
+			redniBroj = document.getDocumentElement().getAttribute("redni_broj");
+			listaRednihBrojeva.add(redniBroj);	
+		}
+		
 		// access the document content
-		Document document = handle.get();
+		for(String s:listaRednihBrojeva){
+			System.out.println(s);
+		}
 
-		String fileName = document.toString();
-		String rootName = document.getDocumentElement().getTagName();
+		
+			
 
-		log.info("Read /example/flipper.xml content with the<"+fileName+"/> root element");
-	
+
+
+		  JSONArray ar=new JSONArray(listaRednihBrojeva);
+		  String json= ar.toString();
+
+	//	log.info("Read /example/flipper.xml content with the<"+fileName+"/> root element");
+		
 		client.release();
-		return fileName;
+		return json;
 		
 	}
 	
 	
 	
-=======
 
->>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
 	@POST
 	@Path("/new")
 	@Produces(MediaType.APPLICATION_XML)
@@ -296,13 +343,7 @@ public class AktService {
 	public static void insertDocument(String path, InputStream in){
 
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
-<<<<<<< HEAD
-		
-		
-		
-=======
 
->>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
 
