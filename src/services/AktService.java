@@ -83,12 +83,13 @@ import model.Odbornik;
 import session.AktDaoLocal;
 import xml.encryption.DecryptKEK;
 import xml.encryption.EncryptKEK;
+import xml.signature.SignDocument;
 
 @Path("/akt")
 public class AktService {
 	ArrayList<String> listaUrija = new ArrayList<String>();
 	ArrayList<String> listaRednihBrojeva = new ArrayList<String>();
-	
+
 	private static final String KEY_STORE_FILE = "C:/Users/Filipo/sgns.jks";
 
 
@@ -104,24 +105,24 @@ public class AktService {
 
 	@Context
 	private HttpServletRequest request ;
-	
-	@GET 
+
+	@GET
     @Produces(MediaType.APPLICATION_XML)
 	@Path("/list")
 	public String izlistajAkte(){
 		// create the client
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
-		
+
 //Ovce pocinje trazenje svih akata iz baze-------------------------------------------
 		// create a manager for searching
 		QueryManager queryMgr = client.newQueryManager();
 
 		// create a search definition
 		StringQueryDefinition query = queryMgr.newStringDefinition();
-				
+
 		// Restrict the search to a specific directory
 		query.setDirectory("/akti/");
-				
+
 		// empty search defaults to returning all results
 		query.setCriteria("");
 
@@ -134,44 +135,44 @@ public class AktService {
 	    // Format the results
 		// Get the list of matching documents in this page of results
 		MatchDocumentSummary[] results = resultsHandle.getMatchResults();
-				
+
 		System.out.println("Listing " + results.length + " documents:");
-				
+
 		// List the URI of each matching document
 			for (MatchDocumentSummary result : results) {
 				listaUrija.add(result.getUri());
 			//	System.out.println(result.getUri());
 			}
-			
+
 //		for(String s:listaUrija){
 //			System.out.println(s);
 //		}
-			
+
 //ovde pocinje citanje svakog dokumenta posebno uz pomoc urij-a
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
-			
+
 		// create a handle to receive the document content
 		DOMHandle handle = new DOMHandle();
-		
+
 		// read the document content
 		String redniBroj;
-		
+
 		for(String s:listaUrija){
 
 			docMgr.read(s, handle);
 			Document document = handle.get();
 			redniBroj = document.getDocumentElement().getAttribute("redni_broj");
-			listaRednihBrojeva.add(redniBroj);	
+			listaRednihBrojeva.add(redniBroj);
 		}
-		
+
 		// access the document content
 		for(String s:listaRednihBrojeva){
 			System.out.println(s);
 		}
 
-		
-			
+
+
 
 
 
@@ -179,14 +180,14 @@ public class AktService {
 		  String json= ar.toString();
 
 	//	log.info("Read /example/flipper.xml content with the<"+fileName+"/> root element");
-		
+
 		client.release();
 		return json;
-		
+
 	}
-	
-	
-	
+
+
+
 
 	@POST
 	@Path("/new")
@@ -204,20 +205,23 @@ public class AktService {
 		//System.out.println(gr.getEmail());
 
 
+
 		String signedXml = null;
+		SignDocument sd = new SignDocument(akt,gr.getEmail(),gr.getEmail());
+
 		try {
-			signedXml = runIt(gr.getEmail(), akt);
-		} catch (JAXBException e) {
+			signedXml = sd.sign();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 
-		EncryptKEK encrypt = new EncryptKEK();
-		Document doc =  encrypt.testIt(signedXml);
-
-		DecryptKEK decrypt = new DecryptKEK();
-		decrypt.testIt(doc);
+//		EncryptKEK encrypt = new EncryptKEK();
+//		Document doc =  encrypt.testIt(signedXml);
+//
+//		DecryptKEK decrypt = new DecryptKEK();
+//		decrypt.testIt(doc);
 
 
 		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
@@ -292,53 +296,6 @@ public class AktService {
 		return in;
 	}
 
-
-	@GET
-    @Produces(MediaType.TEXT_HTML)
-	@Path("/add")
-    public String create() {
-
-//		log.info("example:" );
-//
-//		// create the client
-//		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
-//
-//		// acquire the content
-////		InputStream docStream = AktService.class.getResourceAsStream(
-////			"C:/Users/Shuky/workspaceee/xws/Sabloni/aktPrimer1.xml");
-//		InputStream docStream = null;
-//		try {
-//			docStream = new FileInputStream("C:/Users/Shuky/workspaceee/xws/Sabloni/aktPrimer1.xml");
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//
-//		// create a manager for XML documents
-//		XMLDocumentManager docMgr = client.newXMLDocumentManager();
-//
-//		// create a handle on the content
-//		InputStreamHandle handle = new InputStreamHandle(docStream);
-//
-//		// write the document content
-//		docMgr.write("/Sabloni/aktPrimer2.xml", handle);
-//
-//		log.info("/Sabloni/aktPrimer1.xml content");
-//
-//		// release the client
-//		client.release();
-
-		Odbornik gr = (Odbornik)request.getSession().getAttribute("user");
-		System.out.println(gr.getEmail());
-
-
-		Akt a1 = Akt.getDummy();
-		insertDocument("/akti/"+a1.getId().toString()+".xml", createXML(a1));
-
-
-		return "<html><h1>Dodat akt "+ a1.getId()  +" </h1></html>";
-    }
 
 	public static void insertDocument(String path, InputStream in){
 
