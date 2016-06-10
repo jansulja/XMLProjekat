@@ -70,6 +70,7 @@ import org.xml.sax.SAXException;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
 import com.marklogic.client.document.XMLDocumentManager;
+import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.InputStreamHandle;
 
 import database.Config;
@@ -84,7 +85,7 @@ import xml.encryption.EncryptKEK;
 @Path("/akt")
 public class AktService {
 	
-	private static final String KEY_STORE_FILE = "C:/Users/Shuky/sgns.jks";
+	private static final String KEY_STORE_FILE = "C:/Users/Filipo/sgns.jks";
 	private static final String AKT = "./Sabloni/aktPrimer1.xml";
 	private static Logger log = Logger.getLogger(Gradjanin.class);
 	static {
@@ -98,6 +99,38 @@ public class AktService {
 	@Context
 	private HttpServletRequest request ;
 
+	
+	@GET 
+    @Produces(MediaType.APPLICATION_XML)
+	@Path("/list")
+	public String izlistajAkte(){
+		// create the client
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		
+		// create a manager for XML documents
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+		
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+		
+	
+		// read the document content
+		docMgr.read("/akti/6049.xml", handle);
+
+		// access the document content
+		Document document = handle.get();
+
+		String fileName = document.toString();
+		String rootName = document.getDocumentElement().getTagName();
+
+		log.info("Read /example/flipper.xml content with the<"+fileName+"/> root element");
+	
+		client.release();
+		return fileName;
+		
+	}
+	
+	
 	
 	@POST
 	@Path("/new")
@@ -254,6 +287,8 @@ public class AktService {
 	public void insertDocument(String path, InputStream in){
 		
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		
+		
 		
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();

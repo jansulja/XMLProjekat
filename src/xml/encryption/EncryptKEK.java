@@ -52,7 +52,7 @@ public class EncryptKEK {
 	
 	private static final String IN_FILE = "./data/univerzitet.xml";
 	private static final String OUT_FILE = "./data/univerzitet_enc2.xml";
-	private static final String KEY_STORE_FILE = "C:/Users/Shuky/workspaceee/xws/data/sgns.jks";
+	private static final String KEY_STORE_FILE = "C:/Users/Filipo/git/XMLProjekat/data/sgns.jks";
 	
     static {
     	//staticka inicijalizacija
