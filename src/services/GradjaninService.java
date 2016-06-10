@@ -142,8 +142,6 @@ public class GradjaninService {
 
 	@GET 
     @Produces(MediaType.APPLICATION_JSON)
-	@Authenticate
-	@AuthenticateOdbornik
 	public List<Gradjanin> findByAll() {
 		List<Gradjanin> retVal = null;
 		try {

@@ -16,6 +16,9 @@ import session.OdbornikDaoLocal;
 
 public class ContextClass implements ServletContextListener {
 
+	
+	
+	
 	@EJB
 	private GradjaninDaoLocal gradjaninDao;
 	
