@@ -44,7 +44,7 @@ import util.AuthenticateOdbornik;
 public class GradjaninService {
 
 	private static Logger log = Logger.getLogger(Gradjanin.class);
-	
+
 	// private static Logger log = Logger.getLogger(Gradjanin.class);
 	//
 	// @EJB
@@ -64,29 +64,29 @@ public class GradjaninService {
 
 	@Context
 	private HttpServletRequest request;
-	
+
 	@EJB
 	OdbornikDaoLocal odbornikDao;
-	
+
 	@GET
     @Path("current")
     @Produces(MediaType.APPLICATION_JSON)
 	public Object getCurrentUser(){
-		
+
 		return request.getSession().getAttribute("user");
-		
+
 	}
-	
-	@GET 
+
+	@GET
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
     public Object loginGet(@QueryParam("username") String username, @QueryParam("password") String password) {
     	Gradjanin user = null;
 		try {
 			user = odbornikDao.login(username, password);
-			
+
 			if(user == null){
-				
+
 				user = gradjaninDao.login(username, password);
 			}
         } catch (Exception e) {
@@ -98,7 +98,7 @@ public class GradjaninService {
 		log.info("USER: "+user);
     	return user;
     }
-    
+
 	@POST
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
@@ -107,22 +107,22 @@ public class GradjaninService {
     	Gradjanin user = null;
 		try {
 				user = odbornikDao.login(sentUser.getEmail(), sentUser.getPassword());
-			
+
 				if(user == null){
-					
+
 					user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
 				}
-				
-				
+
+
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
-		if(user==null){//ako ne uspe prijava posalje se greska 403 - znam sta hoces, ali ti ne dozvoljavam 
+		if(user==null){//ako ne uspe prijava posalje se greska 403 - znam sta hoces, ali ti ne dozvoljavam
 			throw new ServiceException("Wrong username or password", Status.FORBIDDEN);
 		}
     	return user;
     }
-	
+
 	@GET
     @Path("logout")
     @Produces(MediaType.TEXT_HTML)
@@ -134,13 +134,20 @@ public class GradjaninService {
         }
     	return "ok";
     }
-	
-	
-	
+
+
+
 	@EJB
 	GradjaninDaoLocal gradjaninDao;
 
-	@GET 
+	//Neko gadja ovaj servis....
+	@GET
+    @Produces(MediaType.APPLICATION_JSON)
+	public Gradjanin init() {
+		return new Gradjanin();
+    }
+
+	@GET
     @Produces(MediaType.APPLICATION_JSON)
 	public List<Gradjanin> findByAll() {
 		List<Gradjanin> retVal = null;
@@ -151,21 +158,21 @@ public class GradjaninService {
 		}
 		return retVal;
     }
-	
-//	@GET 
-//	@Path("{id}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//	@Authenticate
-//    public Gradjanin findById(@PathParam("id") String id) {
-//		Gradjanin retVal = null;
-//		try {
-//			retVal = gradjaninDao.findById(Integer.parseInt(id));
-//		} catch (Exception e) {
-//			log.error(e.getMessage(), e);
-//		}
-//		return retVal;
-//    }
-	
+
+	@GET
+	@Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+	@Authenticate
+    public Gradjanin findById(@PathParam("id") String id) {
+		Gradjanin retVal = null;
+		try {
+			retVal = gradjaninDao.findById(Integer.parseInt(id));
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return retVal;
+    }
+
 	@POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -180,8 +187,8 @@ public class GradjaninService {
 		}
 		return retVal;
     }
-	
-	
+
+
 	@PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -196,7 +203,7 @@ public class GradjaninService {
 		}
 		return retVal;
     }
-	
+
 //	@GET
 //	@Produces("text/html")
 //	public void read(@Context ServletContext context, @Context HttpServletRequest request,
@@ -214,8 +221,8 @@ public class GradjaninService {
 //			e.printStackTrace();
 //		}
 //
-//		
-//		
+//
+//
 //		return;
 //
 //	}
@@ -246,45 +253,45 @@ public class GradjaninService {
 //			@FormParam("brojTelefona") String brojTelefona,
 //			@FormParam("email") String email) {
 //
-//		
+//
 //		Gradjanin gradjanin = new Gradjanin();
 //		gradjanin.setIme(ime);
 //		gradjanin.setPrezime(prezime);
 //		gradjanin.setBrojlicne(Integer.parseInt(brojLicne));
 //		gradjanin.setBrojTelefona(Integer.parseInt(brojTelefona));
-//		
+//
 //		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
-//		
+//
 //			try {
 //				gradjanin.setDatumrodjenja(sdf.parse(datumrodjenja));
 //			} catch (ParseException e) {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-//		
+//
 //		gradjanin.setDrzava(drzava);
 //		gradjanin.setJMBG(Integer.parseInt(JMBG));
 //		gradjanin.setEmail(email);
 //		gradjanin.setPol(pol);
 //		gradjanin.setMestoRodjenja(mestoRodjenja);
 //		gradjanin.setOpstinaRodjenja(opstinaRodjenja);
-//		
+//
 //		log.info(gradjanin.toString());
-//		
+//
 //		try {
 //			gradjaninDao.persist(gradjanin);
 //		} catch (NoSuchFieldException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-//		
+//
 //		URI uri = UriBuilder.fromPath("/gradjanin").build();
 //	    return Response.seeOther(uri).build();
 //
 //	}
-	
-	
-	@DELETE 
+
+
+	@DELETE
     @Path("{id}")
     @Produces(MediaType.TEXT_HTML)
 	public String removeItem(@PathParam("id") Integer id) {
