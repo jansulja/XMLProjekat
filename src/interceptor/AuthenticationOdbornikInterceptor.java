@@ -29,17 +29,14 @@ public class AuthenticationOdbornikInterceptor {
 	@AroundInvoke
 	public Object intercept(InvocationContext context) throws Exception{
 		Object user = request.getSession().getAttribute("user");
-		log.info("user: "+user);
-		if (user == null) {
-			throw new ServiceException("Not logged in", Status.UNAUTHORIZED);
-		}else if(!(user instanceof Odbornik)){
-			throw new ServiceException("Not allowed", Status.UNAUTHORIZED);
-		}	
-		
+		if(!(user instanceof Odbornik)){
+			throw new ServiceException("Not allowed", Status.FORBIDDEN);
+		}
+
 		Object result = context.proceed();
 		return result;
 	}
 
-	
+
 
 }

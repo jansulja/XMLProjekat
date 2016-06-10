@@ -84,21 +84,27 @@ import xml.encryption.EncryptKEK;
 
 @Path("/akt")
 public class AktService {
+<<<<<<< HEAD
 	
 	private static final String KEY_STORE_FILE = "C:/Users/Filipo/sgns.jks";
+=======
+
+	private static final String KEY_STORE_FILE = "C:/Users/Shuky/sgns.jks";
+>>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
 	private static final String AKT = "./Sabloni/aktPrimer1.xml";
 	private static Logger log = Logger.getLogger(Gradjanin.class);
 	static {
-    	//staticka inicijalizacija
+
         Security.addProvider(new BouncyCastleProvider());
         org.apache.xml.security.Init.init();
     }
 	@EJB
 	AktDaoLocal aktDao;
-	
+
 	@Context
 	private HttpServletRequest request ;
 
+<<<<<<< HEAD
 	
 	@GET 
     @Produces(MediaType.APPLICATION_XML)
@@ -132,22 +138,25 @@ public class AktService {
 	
 	
 	
+=======
+
+>>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
 	@POST
 	@Path("/new")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
 	public String predloziAkt(String akt){
-		
+
 		//InputStream stream = new ByteArrayInputStream(akt.getBytes(StandardCharsets.UTF_8));
-		
+
 		log.info("REST String: " + akt);
 		System.out.println("dakaka");
 		Random rand = new Random();
-		
+
 		Odbornik gr = (Odbornik)request.getSession().getAttribute("user");
 		//System.out.println(gr.getEmail());
-		
-		
+
+
 		String signedXml = null;
 		try {
 			signedXml = runIt(gr.getEmail(), akt);
@@ -155,26 +164,26 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 		EncryptKEK encrypt = new EncryptKEK();
 		Document doc =  encrypt.testIt(signedXml);
-		
+
 		DecryptKEK decrypt = new DecryptKEK();
 		decrypt.testIt(doc);
-		
-		
+
+
 		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
-		
+
 		insertDocument("/akti/"+(String.valueOf(rand.nextInt(10000))) + ".xml", stream);
-		
+
 		return "ok";
-		
-		
+
+
 	}
-	
-	
-	@GET 
+
+
+	@GET
     @Produces(MediaType.APPLICATION_JSON)
 	public List<Akt> findByAll() {
 		List<Akt> retVal = null;
@@ -186,28 +195,28 @@ public class AktService {
 		return retVal;
     }
 	public InputStream createXML (Akt akt){
-		
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		
+
 		try {
 			System.out.println("JAXB unmarshalling/marshalling.\n");
 			// Definiše se JAXB kontekst (putanja do paketa sa JAXB bean-ovima)
 			JAXBContext context = JAXBContext.newInstance("model");
 			// Marshaller je objekat zadužen za konverziju iz objektnog u XML model
 			Marshaller marshaller = context.createMarshaller();
-			
+
 			// Podešavanje marshaller-a
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
+
 			// Umesto System.out-a, može se koristiti FileOutputStream
 			marshaller.marshal(akt, out);
-			
+
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			System.out.println(e.toString());
 		}
-		
-		
+
+
 		//InputStream in = new ByteArrayInputStream(out.toByteArray());
 		String aString = null;
 		try {
@@ -216,37 +225,37 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 		System.out.println(aString);
 		Certificate cert = readCertificate("o1@o1.com", "sgns") ;
 		System.out.println(cert);
 		PrivateKey privateKey = readPrivateKey("o1@o1.com", "sgns", "o1@o1.com");
 		System.out.println(privateKey);
-		
-		
+
+
 		Document doc = loadDocument (aString);
 		System.out.println(doc);
 		Document singDoc = signDocument(doc, privateKey, cert);
 		String singString = saveDocument(singDoc);
 		System.out.println(singString);
-		
+
 		InputStream in = new ByteArrayInputStream(singString.getBytes(StandardCharsets.UTF_8));
-		
+
 		return in;
 	}
-	
-	
-	@GET 
+
+
+	@GET
     @Produces(MediaType.TEXT_HTML)
 	@Path("/add")
     public String create() {
-		
+
 //		log.info("example:" );
 //
 //		// create the client
 //		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
-//		
+//
 //		// acquire the content
 ////		InputStream docStream = AktService.class.getResourceAsStream(
 ////			"C:/Users/Shuky/workspaceee/xws/Sabloni/aktPrimer1.xml");
@@ -257,8 +266,8 @@ public class AktService {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-//		
-//		
+//
+//
 //		// create a manager for XML documents
 //		XMLDocumentManager docMgr = client.newXMLDocumentManager();
 //
@@ -272,24 +281,28 @@ public class AktService {
 //
 //		// release the client
 //		client.release();
-		
+
 		Odbornik gr = (Odbornik)request.getSession().getAttribute("user");
 		System.out.println(gr.getEmail());
-		
-		
+
+
 		Akt a1 = Akt.getDummy();
 		insertDocument("/akti/"+a1.getId().toString()+".xml", createXML(a1));
-		
-		
+
+
 		return "<html><h1>Dodat akt "+ a1.getId()  +" </h1></html>";
     }
-	
-	public void insertDocument(String path, InputStream in){
-		
+
+	public static void insertDocument(String path, InputStream in){
+
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+<<<<<<< HEAD
 		
 		
 		
+=======
+
+>>>>>>> 1570b940a0d1befa8de3881c9428094a6934fa3e
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
 
@@ -303,7 +316,7 @@ public class AktService {
 
 		// release the client
 		client.release();
-	
+
 	}
 	/**
 	 * Ucitava sertifikat is KS fajla
@@ -316,15 +329,15 @@ public class AktService {
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
 			ks.load(in, kspassword.toCharArray());
-			
+
 			if(ks.isKeyEntry(alias)) {
 				Certificate cert = ks.getCertificate(alias);
 				return cert;
-				
+
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -343,11 +356,11 @@ public class AktService {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Kreira DOM od XML dokumenta
 	 */
@@ -373,24 +386,24 @@ public class AktService {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Snima DOM u XML fajl 
+	 * Snima DOM u XML fajl
 	 */
 	private String saveDocument(Document doc) {
 		String xmlFile = null ;
 		try {
 			StringWriter writer = new StringWriter();
 		    StreamResult result = new StreamResult(writer);
-			
-			
+
+
 
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();
-			
+
 			DOMSource source = new DOMSource(doc);
 			//StreamResult result = new StreamResult(xmlFile);
-			
+
 			transformer.transform(source, result);
 			xmlFile = writer.toString();
 
@@ -406,42 +419,42 @@ public class AktService {
 		}
 		return xmlFile;
 	}
-	
+
 	/**
-	 * Potpisuje dom file 
+	 * Potpisuje dom file
 	 */
-	
+
 	private Document signDocument(Document doc, PrivateKey privateKey, Certificate cert) {
-        
+
         try {
 			Element rootEl = doc.getDocumentElement();
-			
+
 			//kreira se signature objekat
 			XMLSignature sig = new XMLSignature(doc, null, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
 			//kreiraju se transformacije nad dokumentom
 			Transforms transforms = new Transforms(doc);
-			    
+
 			//iz potpisa uklanja Signature element
 			//Ovo je potrebno za enveloped tip po specifikaciji
 			transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 			//normalizacija
 			transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-			    
+
 			//potpisuje se citav dokument (URI "")
 			sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
-			    
+
 			//U KeyInfo se postavalja Javni kljuc samostalno i citav sertifikat
 			sig.addKeyInfo(cert.getPublicKey());
 			sig.addKeyInfo((X509Certificate) cert);
-			    
+
 			//poptis je child root elementa
 			rootEl.appendChild(sig.getElement());
-			    
+
 			//potpisivanje
 			sig.sign(privateKey);
-			
+
 			return doc;
-			
+
 		} catch (TransformationException e) {
 			e.printStackTrace();
 			return null;
@@ -456,7 +469,7 @@ public class AktService {
 			return null;
 		}
 	}
-	
+
 
 	/**
 	 * Ucitava privatni kljuc is KS fajla
@@ -469,14 +482,14 @@ public class AktService {
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
 			ks.load(in, kspassword.toCharArray());
-			
+
 			if(ks.isKeyEntry(alias)) {
 				PrivateKey pk = (PrivateKey) ks.getKey(alias, apassword.toCharArray());
 				return pk;
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -498,12 +511,12 @@ public class AktService {
 		} catch (UnrecoverableKeyException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
+
 	/**
-	 * Test 
-	 * @throws JAXBException 
+	 * Test
+	 * @throws JAXBException
 	 */
 	private void testIt() throws JAXBException {
 		//Document doc = loadDocument(AKT);
@@ -514,7 +527,7 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Unmarshaller je objekat zadužen za konverziju iz XML-a u objektni model
 		Unmarshaller unmarshaller = null;
 		try {
@@ -526,7 +539,7 @@ public class AktService {
 		//Akt akt = null;
 		Akt akt = (Akt) unmarshaller.unmarshal(new File(AKT));
 		InputStream is = createXML(akt);
-		
+
 
 	}
 	private String runIt(String userPass, String akt) throws JAXBException {
@@ -536,14 +549,14 @@ public class AktService {
 		System.out.println(cert);
 		PrivateKey privateKey = readPrivateKey(userPass, "sgns", userPass);
 		System.out.println(privateKey);
-		
-		
+
+
 		Document doc = loadDocument (akt);
 		System.out.println(doc);
 		Document singDoc = signDocument(doc, privateKey, cert);
 		String singString = saveDocument(singDoc);
 		System.out.println(singString);
-		
+
 		return singString;
 
 	}
@@ -556,5 +569,5 @@ public class AktService {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
