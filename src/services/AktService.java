@@ -73,6 +73,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 //import com.gint.examples.xml.signature.SignEnveloped;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
+import com.marklogic.client.document.GenericDocumentManager;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.FileHandle;
@@ -94,10 +95,15 @@ import model.Gradjanin;
 import model.Odbornik;
 import model.view.Upit;
 import session.AktDaoLocal;
+
 import util.DOMUtil;
+
+
+
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
+
 import xml.signature.SignDocument;
 
 @Path("/akt")
@@ -225,8 +231,10 @@ public class AktService {
 
 		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
 
+
 		// Initialize DOM results handle
 		DOMHandle domResultsHandle = new DOMHandle();
+
 
 
 
@@ -358,20 +366,50 @@ public class AktService {
 			}
 
 		}
+		return "ok";
+	}
 
-		// access the document content
-		for (String s : listaRednihBrojeva) {
-			System.out.println(s);
-		}
 
-		JSONArray ar = new JSONArray(listaRednihBrojeva);
-		String json = ar.toString();
+	@POST
+	@Path("/delete")
+    @Produces(MediaType.APPLICATION_XML)
+	public String deleteAkt(String akt){
 
-		// log.info("Read /example/flipper.xml content with the<"+fileName+"/>
-		// root element");
 
-		client.release();
-		return json;
+		return "ok";
+
+	}
+
+
+	public static void obrisi(String ID){
+		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
+		// create the client
+				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+
+				// create a generic manager for documents
+				GenericDocumentManager docMgr = client.newDocumentManager();
+
+				String putanja = new String("/akti/" + ID + ".xml");
+
+				// delete the documents
+				docMgr.delete(putanja);
+
+
+
+
+				// release the client
+				client.release();
+	}
+
+	@POST
+	@Path("/provera")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_JSON)
+
+	public String proveri(Upit upit){
+		log.info(upit.toString());
+
+		return "ok";
 
 	}
 
@@ -911,6 +949,9 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		obrisi("3094");
+
 	}
 
 }
