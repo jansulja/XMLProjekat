@@ -2,7 +2,6 @@ package xml.signature;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +35,7 @@ import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 public class SignDocument {
 
@@ -79,7 +79,10 @@ public class SignDocument {
 	    factory.setNamespaceAware(true);
 	    DocumentBuilder builder = factory.newDocumentBuilder();
 
-	    return builder.parse(new ByteArrayInputStream(xml.getBytes()));
+	    InputSource is = new InputSource(new ByteArrayInputStream(xml.getBytes()));
+	    is.setEncoding("ISO-8859-1");
+
+	    return builder.parse(is);
 	}
 
 	/**

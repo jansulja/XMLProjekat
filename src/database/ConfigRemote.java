@@ -9,32 +9,30 @@ import com.marklogic.client.DatabaseClientFactory.Authentication;
 
 import services.AktService;
 
-public class Config {
+public class ConfigRemote {
 
 	private static Properties props = loadProperties();
-
-	public static String host = props.getProperty("example.host");
-
-	public static int port = Integer.parseInt(props.getProperty("example.port"));
-
-	public static String user = props.getProperty("example.writer_user");
-
-	public static String password = props.getProperty("example.writer_password");
-
-	public static String admin_user = props.getProperty("example.admin_user");
-
-	public static String admin_password = props.getProperty("example.admin_password");
-
+	
+	public static String host = props.getProperty("conn.host");
+	
+	public static int port = Integer.parseInt(props.getProperty("conn.port"));
+	
+	public static String user = props.getProperty("conn.user");
+	
+	public static String password = props.getProperty("conn.pass");
+	
+	public static String database = props.getProperty("conn.database");
+	
 	public static Authentication authType = Authentication.valueOf(
-				props.getProperty("example.authentication_type").toUpperCase()
+				props.getProperty("conn.authentication_type").toUpperCase()
 				);
 
 	// get the configuration for the example
-	public static Properties loadProperties() {
+	private static Properties loadProperties() {		
 	    try {
 			String propsName = "Config.properties";
 			InputStream propsStream =
-				Config.class.getClassLoader().getResourceAsStream(propsName);
+				ConfigRemote.class.getClassLoader().getResourceAsStream(propsName);
 			if (propsStream == null)
 				throw new IOException("Could not read config properties");
 
@@ -45,6 +43,6 @@ public class Config {
 
 	    } catch (final IOException exc) {
 	        throw new Error(exc);
-	    }
+	    }  
 	}
 }
