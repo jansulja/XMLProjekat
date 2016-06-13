@@ -77,6 +77,7 @@ import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StringQueryDefinition;
 
 import database.Config;
+import database.ConfigRemote;
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
@@ -111,7 +112,7 @@ public class AktService {
 	@Path("/list")
 	public String izlistajAkte(){
 		// create the client
-		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(ConfigRemote.host, ConfigRemote.port,ConfigRemote.database, ConfigRemote.user, ConfigRemote.password, ConfigRemote.authType);
 
 //Ovce pocinje trazenje svih akata iz baze-------------------------------------------
 		// create a manager for searching
@@ -299,7 +300,7 @@ public class AktService {
 
 	public static void insertDocument(String path, InputStream in){
 
-		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(ConfigRemote.host, ConfigRemote.port,ConfigRemote.database, ConfigRemote.user, ConfigRemote.password, ConfigRemote.authType);
 
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
