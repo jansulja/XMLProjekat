@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Akt xmlns:akt="http://www.parlament.gov.rs/akt" xmlns:pred="http://www.parlament.gov.rs/akt/predicate/"
+  naziv="KRIVIČNI ZAKONIK" status="PREDLOZEN" redni_broj="123" about="http://www.parlament.gov.rs/akt/123">
+  <Status property="pred:status" datatype="xs:string">PREDLOZEN</Status>
+  <Naziv>KRIVIČNI ZAKONIK</Naziv>
+  <Deo redni_broj="ДЕО ПРВИ">
+    <Naziv>OPŠTI DEO</Naziv>
+    <Glava redni_broj="GLAVA PRVA">
+      <Naziv> OSNOVNE ODREDBE</Naziv>
+      <Clan redni_broj="Član 1.">
+        <Naziv> Nema krivinog dela niti kazne bez zakona</Naziv>
+        <Stav>
+          <Tekst> Nikome ne može biti izreena kazna ili druga krivina sankcija za delo
+            koje pre nego što je uinjeno zakonom nije bilo odreeno kao krivino delo, niti mu
+            se može izrei kazna ili druga krivina sankcija koja zakonom nije bila propisana pre
+            nego što je krivino delo uinjeno.</Tekst>
+        </Stav>
+      </Clan>
+      <Clan redni_broj="Član 2.">
+        <Naziv> Nema kazne bez krivice</Naziv>
+        <Stav>
+          <Tekst> Kazna i mere upozorenja mogu se izrei samo uiniocu koji je kriv za
+            uinjeno krivino delo.</Tekst>
+        </Stav>
+      </Clan>
+      <Clan redni_broj="Član 3.">
+        <Naziv> Osnov i granice krivinopravne prinude</Naziv>
+        <Stav>
+          <Tekst> Zaštita oveka i drugih osnovnih društvenih vrednosti predstavlja
+            osnov i granice za odrevanje krivinih dela, propisivanje krivinih sankcija i njihovu
+            primenu, u meri u kojoj je to nužno za suzbijanje tih dela.</Tekst>
+        </Stav>
+      </Clan>
+      <Clan redni_broj="Član 4.">
+        <Naziv> Krivine sankcije i njihova opšta svrha</Naziv>
+        <Stav>
+          <Tacka redni_broj="(1)">
+            <Tekst> Krivine sankcije su: kazne, mere upozorenja, mere bezbednosti i
+              vaspitne mere.</Tekst>
+          </Tacka>
+          <Tacka redni_broj="(2)">
+            <Tekst> Opšta svrha propisivanja i izricanja krivinih sankcija je suzbijanje
+              dela kojima se povreuju ili ugrožavaju vrednosti zaštiene krivinim
+              zakonodavstvom.</Tekst>
+          </Tacka>
+          <Tacka redni_broj="(3)">
+            <Tekst> Krivine sankcije se ne mogu izrei licu koje u vreme kada je delo
+              uinjeno nije navršilo etrnaest godina. Vaspitne mere i druge krivine sankcije mogu
+              se izrei maloletniku pod uslovima propisanim posebnim zakonom.</Tekst>
+          </Tacka>
+        </Stav>
+      </Clan>
+    </Glava>
+    <Glava redni_broj="GLAVA DRUGA">
+      <Naziv>VAŽENJE KRIVINOG ZAKONODAVSTVA REPUBLIKE
+        SRBIJE </Naziv>
+      <Clan redni_broj="Clan 5.">
+        <Naziv> Vremensko važenje krivinog zakonodavstva</Naziv>
+        <Stav>
+          <Tacka redni_broj="(1)">
+            <Tekst>  Na  uinioca  krivinog  dela  primenjuje  se  zakon  koji  je  važio  u
+              vreme izvršenja krivinog dela. </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(2)">
+            <Tekst>  Ako  je  posle  izvršenja  krivinog  dela  izmenjen  zakon,  jednom  ili
+              više puta, primenie se zakon koji je najblaži za uinioca. </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(3)">
+            <Tekst> Na  uinioca  krivinog  dela  koje  je  predvieno  zakonom  sa
+              odreenim vremenskim trajanjem primenjuje se taj zakon, bez obzira na to kad mu
+              se sudi, ako tim zakonom nije drukije odreeno. </Tekst>
+          </Tacka>
+        </Stav>
+      </Clan>
+      <Clan>
+        <Naziv>Važenje krivinog zakonodavstva na teritoriji Srbije</Naziv>
+        <Stav>
+          <Tacka redni_broj="(1)">
+            <Tekst>  Krivino  zakonodavstvo  Republike  Srbije  važi  za  svakog  ko  na
+              njenoj teritoriji uini krivino delo. </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(2)">
+            <Tekst>   Krivino  zakonodavstvo  Srbije  važi  i  za  svakog  ko  uini  krivino
+              delo na domaem brodu, bez obzira gde se brod nalazi u vreme izvršenja dela.  </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(3)">
+            <Tekst>   Krivino  zakonodavstvo  Srbije  važi  i  za  svakog  ko  uini  krivino
+              delo  u  domaem  civilnom  vazduhoplovu  dok  je  u  letu  ili  u  domaem  vojnom
+              vazduhoplovu,  bez  obzira  gde  se vazduhoplov nalazio  u  vreme  izvršenja krivinog
+              dela. </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(4)">
+            <Tekst>   Ako  je  u  sluajevima  iz  st.  1.  do  3.  ovog  lana  u  stranoj  državi
+              pokrenut ili dovršen krivini postupak, krivino gonjenje u Srbiji preduzee se samo
+              po odobrenju republikog javnog tužioca.  </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(5)">
+            <Tekst>  Krivino gonjenje stranca u sluajevima iz st. 1. do 3. ovog lana
+              može se, pod uslovom uzajamnosti, ustupiti stranoj državi. </Tekst>
+          </Tacka>
+        </Stav>
+      </Clan>
+    </Glava>
+    <Glava redni_broj="GLAVA TREA">
+      <Naziv> KRIVINO DELO</Naziv>
+      <Odeljak>
+        <Naziv> 1. Opšte odredbe o krivinom delu</Naziv>
+        <Clan redni_broj="lan 14. ">
+          <Naziv> Krivino delo </Naziv>
+          <Stav>
+            <Tacka redni_broj="(1)">
+              <Tekst> Krivino delo je ono delo koje je zakonom predvieno kao krivino
+                delo, koje je protivpravno i koje je skrivljeno. </Tekst>
+            </Tacka>
+            <Tacka redni_broj="(2) ">
+              <Tekst> Nema krivinog dela ukoliko je iskljuena protivpravnost ili krivica,
+                iako postoje sva obeležja krivinog dela odreena zakonom. </Tekst>
+            </Tacka>
+          </Stav>
+        </Clan>
+      </Odeljak>
+      <Odeljak>
+        <Naziv> 2. Pokušaj krivinog dela</Naziv>
+        <Clan redni_broj="Clan 30">
+          <Naziv> Pokusaj</Naziv>
+          <Stav>
+            <Tacka>
+              <Tekst>  Ko  sa  umišljajem  zapone  izvršenje  krivinog  dela,  ali  ga  ne
+                dovrši, kaznie se za pokušaj krivinog dela za koje se po zakonu može izrei kazna
+                zatvora od pet godina ili teža kazna, a za pokušaj drugog krivinog dela samo kad
+                zakon izriito propisuje kažnjavanje i za pokušaj. </Tekst>
+            </Tacka>
+            <Tacka redni_broj="(2)">
+              <Tekst> Uinilac e se za pokušaj kazniti kaznom propisanom za krivino
+                delo, ili ublaženom kaznom. </Tekst>
+            </Tacka>
+          </Stav>
+        </Clan>
+      </Odeljak>
+      <Odeljak>
+        <Naziv> 3. Sauesništvo u krivinom delu</Naziv>
+        <Clan redni_broj="Clan 33">
+          <Stav>
+            <Tekst> Ako  više  lica  uestvovanjem  u  radnji  izvršenja  zajednki  uine  ili  iz
+              nehata  zajedniki  izvrše  krivino  delo,  ili  ostvarujui  zajedniku  odluku  drugom
+              radnjom sa umišljajem bitno doprinesu izvršenju krivinog dela, svako od njih kaznie
+              se kaznom propisanom za to delo. </Tekst>
+          </Stav>
+          <Naziv> Saizvršilaštvo </Naziv>
+        </Clan>
+      </Odeljak>
+      <Clan redni_broj="Clan 60">
+        <Naziv> Sticaj krivinih dela </Naziv>
+        <Stav>
+          <Tacka redni_broj="(1)">
+            <Tekst> Ako  je  uinilac  jednom  radnjom  ili  sa  više  radnji  uinio  više
+              krivinih  dela za koja mu  se  istovremeno sudi,  sud e  prethodno utvrditi kazne  za
+              svako od tih dela, pa e za sva ta dela izrei jedinstvenu kaznu. </Tekst>
+          </Tacka>
+          <Tacka redni_broj="(2)">
+            <Tekst> Jedinstvenu kaznu sud e izrei po sledeim pravilima: </Tekst>
+            <Podtacka redni_broj="1)">
+              <Tekst>   ako je za neko od krivinih dela u sticaju utvrdio kaznu zatvora od
+                trideset do etrdeset godina izrei e samo tu kaznu; </Tekst>
+            </Podtacka>
+            <Podtacka redni_broj="2)">
+              <Tekst>  ako  je  za  krivina  dela  u  sticaju  utvrdio  kazne  zatvora,  povisie
+                najtežu  utvrenu  kaznu,  s  tim  da  jedinstvena  kazna  ne  sme  dostii  zbir  utvrenih
+                kazni, niti prei dvadeset godina zatvora; </Tekst>
+            </Podtacka>
+            <Podtacka redni_broj="3)">
+            <Tekst> ako su za sva krivina dela u sticaju propisane kazne zatvora do tri
+              godine, jedinstvena kazna ne može biti vea od deset godina zatvora; </Tekst>
+              </Podtacka>
+            <Podtacka redni_broj="4)">
+              <Tekst>  ako  je  za  krivina  dela  u  sticaju  utvrdio  samo  novane  kazne,
+                izrei e jednu novanu kaznu u visini zbira utvrenih kazni, s tim da ona ne  sme
+                prei osamnaest miliona dinara, a ako je utvrdio samo novane kazne u odreenim
+                iznosima (lan 50), ona ne sme prei milion dinara odnosno deset miliona dinara kad
+                su jedno ili više krivinih dela izvršeni iz koristoljublja; </Tekst>
+            </Podtacka>
+            <Podtacka redni_broj="5)">
+              <Tekst> ako je za krivina dela u sticaju utvrdio samo kazne rada u javnom
+                interesu,  izrei  e  jednu  kaznu  zatvora  u  javnom  interesu  u  visini  zbira  utvrenih
+                asova rada, s tim da ona ne sme pre tristašezdeset asova, a vreme u kome se
+                rad mora obaviti ne sme biti duže od šest meseci; </Tekst>
+            </Podtacka>
+            <Podtacka redni_broj="6)">
+              <Tekst>  ako je za neka krivina dela u sticaju utvrdio kazne zatvora, a za
+                druga dela novane kazne, izrei e jednu kaznu zatvora i jednu novanu kaznu po
+                odredbama t. 2. do 4. ovog stava. </Tekst>
+            </Podtacka>
+          </Tacka>
+          <Tacka redni_broj="(3)">
+            <Tekst> Novanu kaznu kao sporednu kaznu sud e izrei ako je utvrena
+              makar i za jedno krivino delo u sticaju, a ako je utvrdio više novanih kazni, izrei e
+              jednu novanu kaznu u skladu sa odredbom stava 2. taka 4. ovog lana. Ako sud
+              utvrdi  novanu  kaznu  kao  glavnu  kaznu,  a  utvrdi  i  novanu  kaznu  kao  sporednu
+              kaznu, izrei  jednu novanu kaznu primenjujui pravila iz stava 2. taka 4. ovog
+              lana.</Tekst>
+          </Tacka>
+          <Tacka redni_broj="(4)">
+            <Tekst>Ako  je  sud  za  krivina  dela  u  sticaju  utvrdio  kazne  zatvora  i
+              maloletnikog  zatvora,  izrei  e  kaznu  zatvora  kao  jedinstvenu  kaznu  primenom
+              pravila predvienih u stavu 2. taka 2. ovog lana. </Tekst>
+          </Tacka>
+        </Stav>
+      </Clan>
+    </Glava>
+  </Deo>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+      <ds:Reference URI="">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          <ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+        <ds:DigestValue>ViRnvQhyTvd3GAA+9iETGf7qB3Q=</ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>
+      JOJSFWskmnU9PCAanbV11/o1pdPI4tP6B3CG4PrjB8ZZQixkYMTnzCREnwK+a5f4JoWzy/FLwHFM
+      CbK47XC/tjiFgo2rpFvHuACpdYrOUwYdFg4dtYWw/10geBjoS75XWhqUrPX8R0hJDBtMTlHRlrxm
+      XZVa2wdP1AIn+HV8wmA=
+    </ds:SignatureValue>
+    <ds:KeyInfo>
+      <ds:KeyValue>
+        <ds:RSAKeyValue>
+          <ds:Modulus>
+            7lLO4OJvBpvB9L6yPXjgpX4rXFOqG1kOvBOnXIdyrj/5TwMR3Xwn3ia4VCBrohHV4hjYgNT6RdkX
+            ArK4AbAzhCt3GXtWRMV2oksCxGLlBDMthqrxHpqkSmo+bz5ELRktBQZOSvR6O2hEYzCtXaan0uCB
+            vEi84Ahqs+k7wPpSOWc=
+          </ds:Modulus>
+          <ds:Exponent>AQAB</ds:Exponent>
+        </ds:RSAKeyValue>
+      </ds:KeyValue>
+      <ds:X509Data>
+        <ds:X509Certificate>
+          MIICrjCCAhegAwIBAgIDAeJAMA0GCSqGSIb3DQEBCwUAMIGUMRUwEwYKCZImiZPyLGQBAQwFMTk0
+          NjYxHjAcBgkqhkiG9w0BCQEWD3N1YmNhQGdtYWlsLmNvbTELMAkGA1UEBhMCcnMxDjAMBgNVBAsM
+          BXN1YmNhMQ4wDAYDVQQKDAVzdWJjYTEOMAwGA1UEKgwFc3ViY2ExDjAMBgNVBAQMBXN1YmNhMQ4w
+          DAYDVQQDDAVzdWJjYTAeFw0xNjA1MzEyMjAwMDBaFw0yMDAzMzEyMjAwMDBaMIGiMRIwEAYDVQQD
+          DAlvMUBvMS5jb20xEjAQBgNVBAQMCW8xQG8xLmNvbTESMBAGA1UEKgwJbzFAbzEuY29tMRIwEAYD
+          VQQKDAlvMUBvMS5jb20xEjAQBgNVBAsMCW8xQG8xLmNvbTELMAkGA1UEBhMCcnMxGDAWBgkqhkiG
+          9w0BCQEWCW8xQG8xLmNvbTEVMBMGCgmSJomT8ixkAQEMBTEwMjQxMIGfMA0GCSqGSIb3DQEBAQUA
+          A4GNADCBiQKBgQDuUs7g4m8Gm8H0vrI9eOClfitcU6obWQ68E6dch3KuP/lPAxHdfCfeJrhUIGui
+          EdXiGNiA1PpF2RcCsrgBsDOEK3cZe1ZExXaiSwLEYuUEMy2GqvEemqRKaj5vPkQtGS0FBk5K9Ho7
+          aERjMK1dpqfS4IG8SLzgCGqz6TvA+lI5ZwIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAJjEMZO4tlVI
+          nKFCyzGqWjGPIlWN+kvOAWe9H7WulAkVVkw53XBiaE7z5zQqgOBVwBHxVcupKC93QixZY8zOItmr
+          48xGeTpDVVtFELVFqMS1H6I3L1ZFf+g4YbddqCzGhmceGhfSdbPi0XOBW/bdeX8P/GVzgmT4IbQr
+          yoxLaO5N
+        </ds:X509Certificate>
+      </ds:X509Data>
+    </ds:KeyInfo>
+  </ds:Signature></Akt>
