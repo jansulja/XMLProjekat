@@ -80,9 +80,8 @@ import database.Config;
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
+import model.view.Upit;
 import session.AktDaoLocal;
-import xml.encryption.DecryptKEK;
-import xml.encryption.EncryptKEK;
 import xml.signature.SignDocument;
 
 @Path("/akt")
@@ -163,6 +162,7 @@ public class AktService {
 			docMgr.read(s, handle);
 			Document document = handle.get();
 			redniBroj = document.getDocumentElement().getAttribute("redni_broj");
+			
 			listaRednihBrojeva.add(redniBroj);
 		}
 
@@ -186,8 +186,26 @@ public class AktService {
 
 	}
 
+	@POST
+	@Path("/delete")
+    @Produces(MediaType.APPLICATION_XML)
+	public String deleteAkt(String akt){
+		
+		
+		return "ok";
+		
+	}
 
+	@POST
+	@Path("/provera")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_JSON)
 
+	public String proveri(Upit upit){
+		log.info(upit.getNaziv());
+		
+		return "ok";
+	}
 
 	@POST
 	@Path("/new")
