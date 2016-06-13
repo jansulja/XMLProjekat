@@ -68,6 +68,7 @@ import org.xml.sax.SAXException;
 //import com.gint.examples.xml.signature.SignEnveloped;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
+import com.marklogic.client.document.GenericDocumentManager;
 import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.FileHandle;
@@ -270,6 +271,27 @@ public class AktService {
 		return "ok";
 		
 	}
+	
+	
+	public static void obrisi(String ID){
+		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
+		// create the client
+				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+
+				// create a generic manager for documents
+				GenericDocumentManager docMgr = client.newDocumentManager();
+
+				String putanja = new String("/akti/" + ID + ".xml");
+				
+				// delete the documents
+				docMgr.delete(putanja);
+
+
+
+
+				// release the client
+				client.release();
+	}
 
 	@POST
 	@Path("/provera")
@@ -277,7 +299,7 @@ public class AktService {
 	@Consumes(MediaType.APPLICATION_JSON)
 
 	public String proveri(Upit upit){
-		log.info(upit.getNaziv());
+		log.info(upit.toString());
 		
 		return "ok";
 
@@ -802,6 +824,9 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		obrisi("3094");
+		
 	}
 
 }

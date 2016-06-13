@@ -48,7 +48,8 @@ import javax.xml.bind.annotation.XmlType;
     "datumPredlogaOd", 
     "datumPredlogaDo",
     "datumUsvajanja",
-    "predlagac"
+    "predlagac",
+    "text"
 })
 public class Upit {
 
@@ -66,6 +67,8 @@ public class Upit {
     protected Date  datumUsvajanja;
     @XmlElement(name = "Predlagac")
     protected String predlagac;
+    @XmlElement(name = "Text")
+    protected String text;
 	public String getId() {
 		return id;
 	}
@@ -108,8 +111,14 @@ public class Upit {
 	public void setPredlagac(String predlagac) {
 		this.predlagac = predlagac;
 	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
 	public Upit(String id, String naziv, String status, Date datumPredlogaOd, Date datumPredlogaDo, Date datumUsvajanja,
-			String predlagac) {
+			String predlagac, String text) {
 		super();
 		this.id = id;
 		this.naziv = naziv;
@@ -118,10 +127,17 @@ public class Upit {
 		this.datumPredlogaDo = datumPredlogaDo;
 		this.datumUsvajanja = datumUsvajanja;
 		this.predlagac = predlagac;
+		this.text = text;
 	}
 	public Upit() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "Upit [id=" + id + ", naziv=" + naziv + ", status=" + status + ", datumPredlogaOd=" + datumPredlogaOd
+				+ ", datumPredlogaDo=" + datumPredlogaDo + ", datumUsvajanja=" + datumUsvajanja + ", predlagac="
+				+ predlagac + ", text=" + text + "]";
 	}
     
     
