@@ -23,6 +23,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -39,6 +40,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -65,6 +69,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.JsonNode;
 //import com.gint.examples.xml.signature.SignEnveloped;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
@@ -72,20 +77,24 @@ import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.FileHandle;
 import com.marklogic.client.io.InputStreamHandle;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
 import com.marklogic.client.query.MatchDocumentSummary;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StringQueryDefinition;
 import com.marklogic.client.semantics.GraphManager;
 import com.marklogic.client.semantics.RDFMimeTypes;
-
-import com.sun.xml.internal.ws.util.DOMUtil;
+import com.marklogic.client.semantics.SPARQLMimeTypes;
+import com.marklogic.client.semantics.SPARQLQueryDefinition;
+import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
+import model.view.Upit;
 import session.AktDaoLocal;
+import util.DOMUtil;
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
@@ -115,81 +124,177 @@ public class AktService {
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/list")
 	public String izlistajAkte() {
-		// create the client
+
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
 
-		// Ovce pocinje trazenje svih akata iz
-		// baze-------------------------------------------
-		// create a manager for searching
-		QueryManager queryMgr = client.newQueryManager();
 
-		// create a search definition
-		StringQueryDefinition query = queryMgr.newStringDefinition();
+		// Create a SPARQL query manager to query RDF datasets
+		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
 
-		// Restrict the search to a specific directory
-		query.setDirectory("/akti/");
+				// Initialize DOM results handle
+		DOMHandle domResultsHandle = new DOMHandle();
 
-		// empty search defaults to returning all results
-		query.setCriteria("");
 
-		// create a handle for the search results
-		SearchHandle resultsHandle = new SearchHandle();
+		// Initialize Jackson results handle
+		JacksonHandle resultsHandle = new JacksonHandle();
+		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
 
-		// run the search
-		queryMgr.search(query, resultsHandle);
+		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT * WHERE { ?s ?p ?o }");
 
-		// Format the results
-		// Get the list of matching documents in this page of results
-		MatchDocumentSummary[] results = resultsHandle.getMatchResults();
+		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+		//handleResults(resultsHandle);
 
-		System.out.println("Listing " + results.length + " documents:");
-
-		// List the URI of each matching document
-		for (MatchDocumentSummary result : results) {
-			listaUrija.add(result.getUri());
-			// System.out.println(result.getUri());
-		}
-
-		// for(String s:listaUrija){
-		// System.out.println(s);
-		// }
-
-		// ovde pocinje citanje svakog dokumenta posebno uz pomoc urij-a
-		// create a manager for XML documents
-		XMLDocumentManager docMgr = client.newXMLDocumentManager();
-
-		// create a handle to receive the document content
-		DOMHandle handle = new DOMHandle();
-
-		// read the document content
-		String redniBroj;
-
-		ArrayList<Akt> akti = new ArrayList<Akt>();
-
-		for (String s : listaUrija) {
-
-			docMgr.read(s, handle);
-			Document document = handle.get();
-
-			String xmlString = document.toString();
-
-			redniBroj = document.getDocumentElement().getAttribute("redni_broj");
-			listaRednihBrojeva.add(redniBroj);
-		}
-
-		// access the document content
-		for (String s : listaRednihBrojeva) {
-			System.out.println(s);
-		}
-
-		JSONArray ar = new JSONArray(listaRednihBrojeva);
-		String json = ar.toString();
-
-		client.release();
-		return json;
+		return "{}";
 
 	}
+
+
+
+
+	@POST
+    @Path("/search")
+
+    public void search(Upit upit) {
+		String id;
+		if (upit.getId().isEmpty()) {
+			id = "" ;
+		}else {
+			id =  "?s"
+				+ "?p"
+				+ "\"" + upit.getId() + "\""
+				+".";
+		}
+
+		String naziv;
+		if (upit.getNaziv().isEmpty()) {
+			naziv = "" ;
+		}else {
+			naziv =  "?s"
+					+ "?p"
+					+ "\"" + upit.getNaziv() + "\""
+					+".";
+		}
+
+		String predlagac;
+		if (upit.getPredlagac().isEmpty()) {
+			predlagac = "" ;
+		}else {
+			predlagac =  "?s"
+					+ "?p"
+					+ "\"" + upit.getPredlagac() + "\""
+					+".";
+		}
+
+
+		String status;
+		if (upit.getStatus().isEmpty()) {
+			status = "" ;
+		}else {
+			status =  "?s"
+					+ "?p"
+					+ "\"" + upit.getStatus() + "\""
+					+".";
+		}
+
+//		String datumUsvajnja;
+//		if (upit.getDatumUsvajanja()==null) {
+//			datumUsvajnja = "" ;
+//		}else {
+//			datumUsvajnja =  "?s"
+//					+ "?p"
+//					+ "\"" + upit.getDatumUsvajanja().toString() + "\""
+//					+".";
+//		}
+//
+//		String datumPredloga;
+//		if (upit.getDatumPredlogaDo()()==null) {
+//			datumPredloga = "" ;
+//		}else {
+//			datumPredloga =  "?s"
+//					+ "?p"
+//					+ "\""+upit.getDatumPredloga().toString()+ "\""
+//					+".";
+//		}
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		// Create a SPARQL query manager to query RDF datasets
+
+		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
+
+		// Initialize DOM results handle
+		DOMHandle domResultsHandle = new DOMHandle();
+
+
+
+		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
+//		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { "
+//				+ id
+//				+ naziv
+//				+ predlagac
+//				+ predlagac
+//				+ status
+////				+ datumUsvajnja
+////				+ datumPredloga
+//				+ "}");
+
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { ?s ?p ?o. FILTER regex (?o, \"akt 3\" ). ?s ?p2 ?o2. FILTER regex (?o2, \"PREDLOZEN\" ).  }");
+
+		log.info("aaaaaa" + query );
+		System.out.println("SELECT * WHERE { ?s ?p ?o. FILTER regex (?p, \" http://www.parlament.gov.rs/akt/predicate/naziv \" )  }");
+
+		System.out.println("[INFO] Showing all of the triples from RDF dataset in XML format\n");
+		domResultsHandle = sparqlQueryManager.executeSelect(query, domResultsHandle);
+		DOMUtil.transform(domResultsHandle.get(), System.out);
+
+		// Initialize Jackson results handle
+		JacksonHandle resultsHandle = new JacksonHandle();
+		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+
+
+
+    }
+
+
+	private static void handleResults(JacksonHandle resultsHandle) {
+		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
+		for ( JsonNode row : tuples ) {
+			String subject = row.path("s").path("value").asText();
+			String predicate = row.path("p").path("value").asText();
+			String object = row.path("o").path("value").asText();
+
+			if (!subject.equals("")) System.out.println(subject);
+			log.info("\t" + predicate + " \n\t" + object + "\n");
+		}
+	}
+
+
+
+//	private static void handleResults(JacksonHandle resultsHandle) {
+//		ArrayList<Akt> akti = new ArrayList<Akt>();
+//
+//		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
+//		for ( JsonNode row : tuples ) {
+//			String subject = row.path("s").path("value").asText();
+//			String predicate = row.path("p").path("value").asText();
+//			String object = row.path("o").path("value").asText();
+//
+//
+//			String[] sPath = subject.split("akti/");
+//			String aktID = sPath[1];
+//
+//			String[] pPath = subject.split("akti/");
+//			String pa = sPath[1];
+//
+//
+//			if (!subject.equals("")) System.out.println(subject);
+//			System.out.println("\t" + predicate + " \n\t" + object + "\n");
+//		}
+//	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -276,17 +381,25 @@ public class AktService {
 	@Consumes(MediaType.APPLICATION_XML)
 	public String predloziAkt(String akt) {
 
+		Random rand = new Random();
+		int aktID = rand.nextInt(10000);
+
+		Odbornik gr = (Odbornik) request.getSession().getAttribute("user");
+
 		// InputStream stream = new
 		// ByteArrayInputStream(akt.getBytes(StandardCharsets.UTF_8));
 		Akt akt1 = xmlStringToObject(akt);
-		akt1.setId(132);
+		akt1.setId(String.valueOf(aktID));
+		akt1.setDatumPredlaganja(getXMLGregorianCalendarNow());
+		akt1.setOdbornik(gr.getEmail());
 		log.info(createXMLString(akt1));
 
 		log.info("REST String: " + akt);
 
-		Random rand = new Random();
+		akt = createXMLString(akt1);
 
-		Odbornik gr = (Odbornik) request.getSession().getAttribute("user");
+
+
 
 		String signedXml = null;
 		SignDocument sd = new SignDocument(akt, gr.getEmail(), gr.getEmail());
@@ -306,17 +419,36 @@ public class AktService {
 
 		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
 
-		int aktID = rand.nextInt(10000);
 
-		// insertDocument("/akti/"+(String.valueOf(aktID)) + ".xml", stream);
 
-		String xmlRDFData = addRDFDataToXML(signedXml);
+	    insertDocument("/akti/"+akt1.getId() + ".xml", stream);
 
-		insertMetadata(xmlRDFData, String.valueOf(aktID));
+		@SuppressWarnings("unused")
+		String xmlRDFData = addRDFDataToXML(signedXml,akt1.getId());
+
+		insertMetadata(xmlRDFData, akt1.getId());
 
 		return "ok";
 
 	}
+
+	public XMLGregorianCalendar getXMLGregorianCalendarNow()
+
+    {
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+
+        DatatypeFactory datatypeFactory = null;
+		try {
+			datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        XMLGregorianCalendar now =
+            datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+        return now;
+    }
 
 	private void insertMetadata(String xmlRDFData, String aktID) {
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
@@ -362,20 +494,6 @@ public class AktService {
 		System.out.println("[INFO] Overwriting triples to a named graph \"" + "akt/" + aktID + "/metadata" + "\".");
 		graphManager.write("akt/" + aktID + "/metadata", rdfFileHandle);
 
-		// Read the triples from the named graph
-		System.out.println();
-		System.out.println("[INFO] Retrieving triples from RDF store.");
-		System.out.println("[INFO] Using \"" + "akt/" + aktID + "/metadata" + "\" named graph.");
-
-		// Define a DOM handle instance to hold the results
-		DOMHandle domHandle = new DOMHandle();
-
-		// Retrieve RDF triplets in format (RDF/XML) other than default
-		graphManager.read("akt/" + aktID + "/metadata", domHandle).withMimetype(RDFMimeTypes.RDFXML);
-
-		// Serialize document to the standard output stream
-		System.out.println("[INFO] Rendering triples as \"application/rdf+xml\".");
-		// DOMUtil.transform(domHandle.get(), System.out);
 
 		// Release the client
 		client.release();
@@ -384,11 +502,15 @@ public class AktService {
 
 	}
 
-	private String addRDFDataToXML(String akt) {
+	private String addRDFDataToXML(String akt,String id) {
 
 		RDFDataGenerator rdfGen = new RDFDataGenerator(akt);
-		rdfGen.setPredicate("Naziv", RDFDataType.STRING, "naziv_akta");
-		rdfGen.setSubject("0000001");
+		rdfGen.setPredicate("Naziv", RDFDataType.STRING, "naziv");
+		rdfGen.setPredicate("ID", RDFDataType.STRING, "id");
+		rdfGen.setPredicate("Status", RDFDataType.STRING, "status");
+		rdfGen.setPredicate("Datum_predlaganja", RDFDataType.STRING, "datum_predlaganja");
+		rdfGen.setPredicate("Odbornik", RDFDataType.STRING, "odbornik");
+		rdfGen.setSubject(id);
 		return rdfGen.getDocumentAsString();
 
 	}
