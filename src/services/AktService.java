@@ -456,9 +456,26 @@ public class AktService {
 
 	@POST
 	@Path("/delete")
-    @Produces(MediaType.APPLICATION_XML)
-	public String deleteAkt(String akt){
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String deleteAkt(String id){
+		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
+		// create the client
+				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
 
+				// create a generic manager for documents
+				GenericDocumentManager docMgr = client.newDocumentManager();
+
+				String putanja = new String("/akti/" +id + ".xml");
+
+				// delete the documents
+				docMgr.delete(putanja);
+
+
+
+
+				// release the client
+				client.release();
 
 		return "ok";
 
