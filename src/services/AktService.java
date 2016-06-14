@@ -31,6 +31,7 @@ import java.util.Random;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,7 +56,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -1119,6 +1119,22 @@ public class AktService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+
+		return "ok";
+    }
+
+
+	@DELETE
+	@Path("{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public String delete(@PathParam("id") String id) {
+
+
+
+		log.info("Deleted --->>  " + id);
+
+
 
 
 		return "ok";
