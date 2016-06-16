@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -32,9 +33,11 @@ import java.util.Random;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -57,6 +61,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -66,7 +71,6 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.codehaus.jettison.json.JSONArray;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -99,21 +103,16 @@ import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
 
-
 import rs.ac.uns.ftn.xws.util.ServiceException;
 
+import model.metadata.AktMetaData;
 import model.view.Upit;
 
 import session.AktDaoLocal;
-
 import util.DOMUtil;
-
-
-
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
-
 import xml.signature.SignDocument;
 
 
@@ -141,7 +140,7 @@ public class AktService {
 	private HttpServletRequest request;
 
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/list")
 	public String izlistajAkte() {
 //<<<<<<< HEAD
@@ -172,9 +171,9 @@ public class AktService {
 		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT * WHERE { ?s ?p ?o }");
 
 		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
-		//handleResults(resultsHandle);
+		String json = handleResultsJSON(resultsHandle);
 
-		return "{}";
+		return json;
 
 	}
 
@@ -360,41 +359,125 @@ public class AktService {
     }
 
 
-	private static void handleResults(JacksonHandle resultsHandle) {
+
+
+
+
+	private String handleResultsJSON(JacksonHandle resultsHandle) {
+		List<AktMetaData> akti = new ArrayList<AktMetaData>();
+
 		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
 		for ( JsonNode row : tuples ) {
 			String subject = row.path("s").path("value").asText();
 			String predicate = row.path("p").path("value").asText();
 			String object = row.path("o").path("value").asText();
 
+
+			String[] sPath = subject.split("akt/");
+			String aktID = sPath[1];
+
+			String[] pPath = predicate.split("predicate/");
+			String pred = pPath[1];
+
+
+			AktMetaData akt = findAkt(akti,aktID);
+
+			if(akt == null){
+
+				akt = new AktMetaData();
+				akt.setId(aktID);
+
+				setPredicate(akt,pred,object);
+				akti.add(akt);
+
+			}else{
+
+				setPredicate(akt, pred,object);
+
+			}
+
+
+
 			if (!subject.equals("")) System.out.println(subject);
-			log.info("\t" + predicate + " \n\t" + object + "\n");
+			System.out.println("\t" + predicate + " \n\t" + object + "\n");
 		}
+
+
+		return convertToJson(akti);
+
+
+	}
+
+	private String convertToJson(List<AktMetaData> akti) {
+
+		String json = "[ ";
+
+		for(AktMetaData a : akti){
+
+			json += a.toString();
+			json += ",";
+		}
+
+		StringBuilder sb = new StringBuilder(json);
+		sb.setCharAt(json.length()-1, ' ');
+
+		json = sb.toString();
+
+		json += "]";
+
+		return json;
+
 	}
 
 
 
-//	private static void handleResults(JacksonHandle resultsHandle) {
-//		ArrayList<Akt> akti = new ArrayList<Akt>();
-//
-//		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
-//		for ( JsonNode row : tuples ) {
-//			String subject = row.path("s").path("value").asText();
-//			String predicate = row.path("p").path("value").asText();
-//			String object = row.path("o").path("value").asText();
-//
-//
-//			String[] sPath = subject.split("akti/");
-//			String aktID = sPath[1];
-//
-//			String[] pPath = subject.split("akti/");
-//			String pa = sPath[1];
-//
-//
-//			if (!subject.equals("")) System.out.println(subject);
-//			System.out.println("\t" + predicate + " \n\t" + object + "\n");
-//		}
-//	}
+
+	private void setPredicate(AktMetaData akt, String pred, String object) {
+
+		switch (pred) {
+		case "naziv":
+			akt.setNaziv(object);
+			break;
+		case "status":
+			akt.setStatus(object);
+			break;
+		case "odbornik":
+			akt.setOdbornik(object);
+			break;
+		case "datumPredlaganja":
+			akt.setDatumPredlaganja(object);
+			break;
+
+
+		}
+
+
+	}
+
+
+
+
+	private static AktMetaData findAkt(List<AktMetaData> akti, String aktID) {
+
+		AktMetaData akt = null;
+
+		for(AktMetaData a : akti){
+
+			if(a.getId().equals(aktID)){
+
+				return a;
+
+
+			}
+
+		}
+
+		return akt;
+
+	}
+
+
+
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -464,9 +547,26 @@ public class AktService {
 
 	@POST
 	@Path("/delete")
-    @Produces(MediaType.APPLICATION_XML)
-	public String deleteAkt(String akt){
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String deleteAkt(String id){
+		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
+		// create the client
+				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
 
+				// create a generic manager for documents
+				GenericDocumentManager docMgr = client.newDocumentManager();
+
+				String putanja = new String("/akti/" +id + ".xml");
+
+				// delete the documents
+				docMgr.delete(putanja);
+
+
+
+
+				// release the client
+				client.release();
 
 		return "ok";
 
@@ -652,12 +752,19 @@ public class AktService {
 		rdfGen.setPredicate("Naziv", RDFDataType.STRING, "naziv");
 		rdfGen.setPredicate("ID", RDFDataType.STRING, "id");
 		rdfGen.setPredicate("Status", RDFDataType.STRING, "status");
+
 		rdfGen.setPredicate("Datum_predlaganja", RDFDataType.DATE, "datum_predlaganja");
+
+
 		rdfGen.setPredicate("Odbornik", RDFDataType.STRING, "odbornik");
 		rdfGen.setSubject(id);
 		return rdfGen.getDocumentAsString();
 
 	}
+
+
+
+
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -1059,5 +1166,86 @@ public class AktService {
 		obrisi("3094");
 
 	}
+
+
+	@GET
+	@Path("{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public String findById(@PathParam("id") String id) {
+
+
+
+		log.info("ID --->>  " + id);
+
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+
+		// create a manager for XML documents
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read("/akti/"+id+".xml", handle);
+
+		// access the document content
+		Document document = handle.get();
+
+
+		TransformerFactory tFactory=TransformerFactory.newInstance();
+
+
+
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("/resource/xsl/akt_new.xsl");
+
+        Source xslDoc=new StreamSource(is);
+        Source xmlDoc=new DOMSource(document);
+
+        String outputFileName= System.getProperty( "catalina.base" ) + "/webapps/xws_client/views/akt-prikaz.html";
+
+        OutputStream htmlFile = null;
+		try {
+			htmlFile = new FileOutputStream(outputFileName);
+			Transformer trasform=tFactory.newTransformer(xslDoc);
+
+	        trasform.transform(xmlDoc, new StreamResult(htmlFile));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			htmlFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		return "ok";
+    }
+
+
+	@DELETE
+	@Path("{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public String delete(@PathParam("id") String id) {
+
+
+
+		log.info("Deleted --->>  " + id);
+
+
+
+
+		return "ok";
+    }
 
 }
