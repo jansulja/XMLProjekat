@@ -40,7 +40,12 @@ public class RDFDataGenerator {
 		DocumentBuilder db = null;
 		InputSource is = new InputSource();
 		try {
-			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+			DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+
+			db = dbf.newDocumentBuilder();
+
 			is.setCharacterStream(new StringReader(xml));
 			xmlDocument = db.parse(is);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -67,7 +72,15 @@ public class RDFDataGenerator {
 
 
 	public void setSubject(String id){
+		//root.setAttribute("xlmns", "http://www.parlament.gov.rs/akt");
+		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
+		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:pred", "http://www.parlament.gov.rs/akt/predicate/");
+		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsbs", "http://www.w3.org/2001/XMLSchema#");
+		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
 		root.setAttribute("about", "http://www.parlament.gov.rs/akt/" + id);
+
+		printDocument();
+
 	}
 
 	public void setPredicate(String elementTagName, RDFDataType datatype, String predicateName){
@@ -76,7 +89,7 @@ public class RDFDataGenerator {
 		Element element = (Element) nodes.item(0);
 		element.setAttribute("property", "pred:" + predicateName);
 		element.setAttribute("datatype", getDataType(datatype));
-		
+
 
 	}
 
@@ -86,11 +99,13 @@ public class RDFDataGenerator {
 
 		switch (datatype) {
 		case STRING:
-			type = "xs:string";
+			type = "xsbs:string";
 			break;
 
 		case DATE:
-			type = "xs:date";
+
+			type = "xsbs:date";
+			System.out.println("SHema Date");
 			break;
 		}
 
