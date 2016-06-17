@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.parlament.gov.rs/amandman"
+    xmlns="http://www.parlament.gov.rs/amandman">
+    <xs:element name="Amandman">
+        <xs:complexType>
+            <xs:sequence maxOccurs="1" minOccurs="1">
+                <xs:element name="Naziv" type="NazivAmandmana"/>
+                <xs:element name="Sadrzaj" type="Sadrzaj" maxOccurs="1" minOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="NazivAmandmana">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Propis o izmeni"/>
+            <xs:enumeration value="Propis o dopuni"/>
+            <xs:enumeration value="Propis o izmeni i dopunama"/>
+            <xs:enumeration value="Propis o izmenama i dopuni"/>
+            <xs:enumeration value="Propis o izmenama i dopunama"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="Referenca" mixed="true">
+        <xs:attribute name="clan_ref" type="xs:positiveInteger"/>
+        <xs:attribute name="stav_ref" type="xs:positiveInteger"/>
+        <xs:attribute name="tacka_ref" type="xs:positiveInteger"/>
+    </xs:complexType>
+    <xs:complexType mixed="true" name="Sadrzaj">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="Referenca" type="Referenca"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -33,6 +33,8 @@ public class AuthenticationOdbornikInterceptor {
 			throw new ServiceException("Not allowed", Status.FORBIDDEN);
 		}
 
+
+
 		Object result = context.proceed();
 		return result;
 	}

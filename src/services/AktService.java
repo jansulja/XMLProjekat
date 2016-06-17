@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +22,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -39,6 +39,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -50,7 +52,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -58,7 +59,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -84,6 +84,7 @@ import com.marklogic.client.io.FileHandle;
 import com.marklogic.client.io.InputStreamHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.SearchHandle;
+import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.query.MatchDocumentSummary;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StringQueryDefinition;
@@ -94,12 +95,15 @@ import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
+import dom.util.DOMUtility;
+import init.ContextClass;
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
 import model.metadata.AktMetaData;
 import model.view.Upit;
 import session.AktDaoLocal;
+import session.OdbornikDaoLocal;
 import util.DOMUtil;
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
@@ -122,6 +126,8 @@ public class AktService {
 	}
 	@EJB
 	AktDaoLocal aktDao;
+	@EJB
+	OdbornikDaoLocal odbornikDao;
 
 	@Context
 	private HttpServletRequest request;
@@ -147,7 +153,7 @@ public class AktService {
 		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
 
 		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
-		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT * WHERE { ?s ?p ?o }");
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT *  WHERE { ?s ?p ?o FILTER(REGEX(STR(?s),\"akt\"))}");
 
 		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
 		String json = handleResultsJSON(resultsHandle);
@@ -160,17 +166,22 @@ public class AktService {
 
 
 	@POST
-    @Path("/search")
+	@Path("/search")
+	public String search(Upit upit) {
 
-    public void search(Upit upit) {
+
+
+
 		String id;
 		if (upit.getId().isEmpty()) {
 			id = "" ;
 		}else {
-			id =  "?s"
-				+ "?p"
-				+ "\"" + upit.getId() + "\""
-				+".";
+			id =  "?s "
+					+ "<http://www.parlament.gov.rs/akt/predicate/id> "
+					+ "?o1"
+					+" ."
+					+"FILTER regex (?o1, \""+upit.getId()+"\" )."
+					;
 		}
 
 		String naziv;
@@ -178,9 +189,11 @@ public class AktService {
 			naziv = "" ;
 		}else {
 			naziv =  "?s"
-					+ "?p"
-					+ "\"" + upit.getNaziv() + "\""
-					+".";
+					+ "<http://www.parlament.gov.rs/akt/predicate/naziv> "
+					+ "?o2"
+					+"."
+					+"FILTER regex (?o2, \""+upit.getNaziv()+"\" )."
+					;
 		}
 
 		String predlagac;
@@ -188,9 +201,11 @@ public class AktService {
 			predlagac = "" ;
 		}else {
 			predlagac =  "?s"
-					+ "?p"
-					+ "\"" + upit.getPredlagac() + "\""
-					+".";
+					+ "<http://www.parlament.gov.rs/akt/predicate/odbornik> "
+					+ "?o3"
+					+"."
+					+"FILTER regex (?o3, \""+upit.getPredlagac()+"\" )."
+					;
 		}
 
 
@@ -199,30 +214,64 @@ public class AktService {
 			status = "" ;
 		}else {
 			status =  "?s"
-					+ "?p"
-					+ "\"" + upit.getStatus() + "\""
-					+".";
+					+ "<http://www.parlament.gov.rs/akt/predicate/status> "
+					+ "?o4"
+					+"."
+					+"FILTER regex (?o4, \""+upit.getStatus()+"\" )."
+					;
 		}
 
-//		String datumUsvajnja;
-//		if (upit.getDatumUsvajanja()==null) {
-//			datumUsvajnja = "" ;
-//		}else {
-//			datumUsvajnja =  "?s"
-//					+ "?p"
-//					+ "\"" + upit.getDatumUsvajanja().toString() + "\""
-//					+".";
-//		}
-//
-//		String datumPredloga;
-//		if (upit.getDatumPredlogaDo()()==null) {
-//			datumPredloga = "" ;
-//		}else {
-//			datumPredloga =  "?s"
-//					+ "?p"
-//					+ "\""+upit.getDatumPredloga().toString()+ "\""
-//					+".";
-//		}
+		String datumUsvajanja;
+		if (upit.getDatumUsvajanja()==null) {
+			datumUsvajanja = "" ;
+		}else {
+			//System.out.println(upit.getDatumPredlogaDo());
+			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+		    String date = DATE_FORMAT.format(upit.getDatumUsvajanja());
+
+			//System.out.println(date);
+		    datumUsvajanja =  "?s"
+					+ "<http://www.parlament.gov.rs/akt/predicate/datum_usvajanja>"
+					+ "?o7"
+					+"."
+					+"FILTER (?o7 == \" "+date+ "\"^^xs:date )."
+					;
+		}
+
+
+
+		String datumPredlogaDo;
+		if (upit.getDatumPredlogaDo()==null) {
+			datumPredlogaDo = "" ;
+		}else {
+			//System.out.println(upit.getDatumPredlogaDo());
+			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+		    String date = DATE_FORMAT.format(upit.getDatumPredlogaDo());
+
+			//System.out.println(date);
+			datumPredlogaDo =  "?s"
+					+ "<http://www.parlament.gov.rs/akt/predicate/datum_predlaganja>"
+					+ "?o5"
+					+"."
+					+"FILTER (?o5 < \" "+date+ "\"^^xs:date )."
+					;
+		}
+		String datumPredlogaOd;
+		if (upit.getDatumPredlogaOd()==null) {
+			datumPredlogaOd = "" ;
+		}else {
+			//System.out.println(upit.getDatumPredlogaDo());
+			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+		    String date = DATE_FORMAT.format(upit.getDatumPredlogaOd());
+
+			//System.out.println(date);
+		    datumPredlogaOd =  "?s"
+					+ "<http://www.parlament.gov.rs/akt/predicate/datum_predlaganja>"
+					+ "?o5"
+					+"."
+					+"FILTER (?o5 >= \" "+date+ "\"^^xs:date )."
+					;
+		}
 
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
@@ -236,38 +285,127 @@ public class AktService {
 		DOMHandle domResultsHandle = new DOMHandle();
 
 
+		System.out.println(id + "----------id");
+		System.out.println(naziv + "----------naziv");
 
 
 		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
-//		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { "
-//				+ id
-//				+ naziv
-//				+ predlagac
-//				+ predlagac
-//				+ status
-////				+ datumUsvajnja
-////				+ datumPredloga
-//				+ "}");
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("PREFIX xs:     <http://www.w3.org/2001/XMLSchema#>\n SELECT ?s WHERE { "
+				+ id
+				+ naziv
+				+ predlagac
+				+ status
+				+ datumUsvajanja
+				+ datumPredlogaOd
+				+ datumPredlogaDo
+				+ "}");
 
-		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { ?s ?p ?o. FILTER regex (?o, \"akt 3\" ). ?s ?p2 ?o2. FILTER regex (?o2, \"PREDLOZEN\" ).  }");
+		//SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { ?s ?p ?o. FILTER regex (?o, \"o1@o1.com\" ). ?s ?p2 ?o2. FILTER regex (?o2, \"PREDLOZEN\" ).  }");
+		System.out.println(id + "----------id");
+		System.out.println(naziv + "----------naziv");
+		log.info("aaaaaab              " + query );
+		System.out.println("SELECT ?s WHERE { "
+				+ id
+				+ naziv
 
-		log.info("aaaaaa" + query );
-		System.out.println("SELECT * WHERE { ?s ?p ?o. FILTER regex (?p, \" http://www.parlament.gov.rs/akt/predicate/naziv \" )  }");
+				+ predlagac
+				+ status
+
+				+ "}");
 
 		System.out.println("[INFO] Showing all of the triples from RDF dataset in XML format\n");
-		domResultsHandle = sparqlQueryManager.executeSelect(query, domResultsHandle);
-		DOMUtil.transform(domResultsHandle.get(), System.out);
 
-		// Initialize Jackson results handle
+
 		JacksonHandle resultsHandle = new JacksonHandle();
 		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
 
+		//rez metadata
+		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
 
+		String filter = getAktsByIDsQuery(resultsHandle);
+
+		if(filter.isEmpty())
+			return "[]";
+
+		resultsHandle = new JacksonHandle();
+		query = sparqlQueryManager.newQueryDefinition("SELECT *  WHERE { ?s ?p ?o " + filter + "  }");
+		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+		String jsonResult = handleResultsJSON(resultsHandle);
+
+		DOMUtil.transform(domResultsHandle.get(), System.out);
+
+
+
+		if (!upit.getText().isEmpty()){
+		// Initialize Jackson results handle
+
+
+			QueryManager queryMgr = client.newQueryManager();
+
+		// create a handle for the search results to be received as raw XML
+			StringHandle resultsHandle2 = new StringHandle();
+			SearchHandle resultsHandle3 = new SearchHandle();
+
+			StringQueryDefinition query2 = queryMgr.newStringDefinition();
+
+			query2.setCriteria(upit.getText());
+
+		// run the search
+			queryMgr.search(query2, resultsHandle3);
+			MatchDocumentSummary[] results = resultsHandle3.getMatchResults();
+		// dump the XML results to the console
+			System.out.println(results[0].getPath());
+		}
+
+
+		client.release();
+		String idPath = "2016-06-15-6043" ;
+
+		return jsonResult;
 
 
     }
 
 
+
+
+
+	private String getAktsByIDsQuery(JacksonHandle resultsHandle) {
+		ArrayList<String> amandmani = new ArrayList<String>();
+
+		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
+		for ( JsonNode row : tuples ) {
+
+			String subject = row.path("s").path("value").asText();
+			amandmani.add(subject.split("akt/")[1]);
+		}
+
+		if(!amandmani.isEmpty()){
+
+
+			String filter="FILTER(";
+			for(int i=0;i<amandmani.size(); i++){
+
+				filter += "REGEX(STR(?s),\""+ amandmani.get(i) +"\") ";
+				if(i < amandmani.size()-1){
+
+					filter += "|| ";
+
+				}else{
+
+					filter += ") ";
+
+
+				}
+
+			}
+			return filter;
+
+		}
+
+		return "";
+
+	}
 
 
 
@@ -554,7 +692,7 @@ public class AktService {
 
 	}
 
-	public XMLGregorianCalendar getXMLGregorianCalendarNow()
+	public static XMLGregorianCalendar getXMLGregorianCalendarNow()
 
     {
 
@@ -1030,23 +1168,21 @@ public class AktService {
 	}
 
 	public static void main(String[] args) {
-		AktService sign = new AktService();
-		try {
-			sign.testIt();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		AktService aktService = new AktService();
 
-		obrisi("3094");
+		aktService.updateStatus("");
+
 
 	}
 
 
+
+
+
 	@GET
 	@Path("{id}")
-    @Produces(MediaType.TEXT_HTML)
-    public String findById(@PathParam("id") String id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Akt findById(@PathParam("id") String id) {
 
 
 
@@ -1067,45 +1203,100 @@ public class AktService {
 		// access the document content
 		Document document = handle.get();
 
-
-		TransformerFactory tFactory=TransformerFactory.newInstance();
-
+		Akt akt = xmlStringToObject(DOMUtility.toString(document));
 
 
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream("/resource/xsl/akt_new.xsl");
+//		TransformerFactory tFactory=TransformerFactory.newInstance();
+//
+//
+//
+//		InputStream is = this.getClass().getClassLoader().getResourceAsStream("/resource/xsl/akt_new.xsl");
+//
+//        Source xslDoc=new StreamSource(is);
+//        Source xmlDoc=new DOMSource(document);
+//
+//        String outputFileName= System.getProperty( "catalina.base" ) + "/webapps/xws_client/views/akt-prikaz.html";
+//
+//        OutputStream htmlFile = null;
+//		try {
+//			htmlFile = new FileOutputStream(outputFileName);
+//			Transformer trasform=tFactory.newTransformer(xslDoc);
+//
+//
+//	        trasform.transform(xmlDoc, new StreamResult(htmlFile));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (TransformerConfigurationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (TransformerException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		try {
+//			htmlFile.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
-        Source xslDoc=new StreamSource(is);
-        Source xmlDoc=new DOMSource(document);
 
-        String outputFileName= System.getProperty( "catalina.base" ) + "/webapps/xws_client/views/akt-prikaz.html";
+		return akt;
+    }
 
-        OutputStream htmlFile = null;
-		try {
-			htmlFile = new FileOutputStream(outputFileName);
-			Transformer trasform=tFactory.newTransformer(xslDoc);
 
-	        trasform.transform(xmlDoc, new StreamResult(htmlFile));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		try {
-			htmlFile.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String updateStatus(String lista){
+
+		String aktId = "2016-06-14-2422";
+		String status = "USVOJEN";
+
+
+		updateMetaData(aktId,status);
+
+
 
 
 		return "ok";
-    }
+
+
+	}
+
+
+	private void updateMetaData(String aktId, String status) {
+
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+
+		// Create a SPARQL query manager to query RDF datasets
+		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
+
+				// Initialize DOM results handle
+		DOMHandle domResultsHandle = new DOMHandle();
+
+
+		// Initialize Jackson results handle
+		JacksonHandle resultsHandle = new JacksonHandle();
+		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
+
+		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
+		//SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT *  WHERE { ?s ?p ?o  FILTER(REGEX(STR(?p),\"akt_id\"))  FILTER(REGEX(STR(?o),\""+id+"\")) }");
+
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition(" DELETE DATA { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"PREDLOZEN\" }");
+
+		sparqlQueryManager.executeUpdate(query);
+
+		query = sparqlQueryManager.newQueryDefinition(" INSERT DATA { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"USVOJEN\" }");
+
+		sparqlQueryManager.executeUpdate(query);
+
+	}
+
+
 
 
 	@DELETE
@@ -1122,5 +1313,31 @@ public class AktService {
 
 		return "ok";
     }
+
+
+	@POST
+	@Path("/checkPass")
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response checkPass(String pass){
+			String password = null;
+			try {
+				password = ContextClass.getPasswordHash(pass);
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Odbornik gr = (Odbornik) request.getSession().getAttribute("user");
+			String username = gr.getEmail();
+			if (odbornikDao.chechCred(username, password)){
+				return Response.status(Status.OK).build() ;
+			}else{
+				return Response.status(Status.FORBIDDEN).build() ;
+			}
+	}
+
 
 }
