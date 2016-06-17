@@ -22,6 +22,9 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
+import java.text.Format;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -39,7 +42,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
 import javax.ws.rs.core.Response;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -95,13 +100,21 @@ import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
+
 import dom.util.DOMUtility;
 import init.ContextClass;
+
+import database.ConfigRemote;
+
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
+
+import rs.ac.uns.ftn.xws.util.ServiceException;
+
 import model.metadata.AktMetaData;
 import model.view.Upit;
+
 import session.AktDaoLocal;
 import session.OdbornikDaoLocal;
 import util.DOMUtil;
@@ -109,6 +122,10 @@ import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
 import xml.signature.SignDocument;
+
+
+import rs.ac.uns.ftn.examples.util.Util;
+import rs.ac.uns.ftn.examples.util.Util.ConnectionProperties;
 
 @Path("/akt")
 public class AktService {
@@ -136,9 +153,17 @@ public class AktService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/list")
 	public String izlistajAkte() {
+//<<<<<<< HEAD
+//		// create the client
+//
+//		DatabaseClient client = DatabaseClientFactory.newClient(ConfigRemote.host, ConfigRemote.port,ConfigRemote.database, ConfigRemote.user, ConfigRemote.password, ConfigRemote.authType);
+//
+//
+//=======
 
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
+
 
 
 		// Create a SPARQL query manager to query RDF datasets
@@ -168,6 +193,8 @@ public class AktService {
 	@POST
 	@Path("/search")
 	public String search(Upit upit) {
+
+
 
 
 
@@ -214,10 +241,12 @@ public class AktService {
 			status = "" ;
 		}else {
 			status =  "?s"
+
 					+ "<http://www.parlament.gov.rs/akt/predicate/status> "
 					+ "?o4"
 					+"."
 					+"FILTER regex (?o4, \""+upit.getStatus()+"\" )."
+
 					;
 		}
 
@@ -290,7 +319,9 @@ public class AktService {
 
 
 		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
+
 		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("PREFIX xs:     <http://www.w3.org/2001/XMLSchema#>\n SELECT ?s WHERE { "
+
 				+ id
 				+ naziv
 				+ predlagac
@@ -313,8 +344,6 @@ public class AktService {
 
 				+ "}");
 
-		System.out.println("[INFO] Showing all of the triples from RDF dataset in XML format\n");
-
 
 		JacksonHandle resultsHandle = new JacksonHandle();
 		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
@@ -336,8 +365,12 @@ public class AktService {
 
 
 
+
 		if (!upit.getText().isEmpty()){
 		// Initialize Jackson results handle
+
+
+
 
 
 			QueryManager queryMgr = client.newQueryManager();
@@ -359,9 +392,13 @@ public class AktService {
 
 
 		client.release();
-		String idPath = "2016-06-15-6043" ;
 
 		return jsonResult;
+
+
+
+
+
 
 
     }
@@ -594,9 +631,26 @@ public class AktService {
 
 	@POST
 	@Path("/delete")
-    @Produces(MediaType.APPLICATION_XML)
-	public String deleteAkt(String akt){
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String deleteAkt(String id){
+		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
+		// create the client
+				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
 
+				// create a generic manager for documents
+				GenericDocumentManager docMgr = client.newDocumentManager();
+
+				String putanja = new String("/akti/" +id + ".xml");
+
+				// delete the documents
+				docMgr.delete(putanja);
+
+
+
+
+				// release the client
+				client.release();
 
 		return "ok";
 
@@ -641,10 +695,12 @@ public class AktService {
 	@Consumes(MediaType.APPLICATION_XML)
 	public String predloziAkt(String akt) {
 
+
 		Random rand = new Random();
 		int aktID = rand.nextInt(10000);
 
 		Odbornik gr = (Odbornik) request.getSession().getAttribute("user");
+
 
 		// InputStream stream = new
 		// ByteArrayInputStream(akt.getBytes(StandardCharsets.UTF_8));
@@ -681,6 +737,11 @@ public class AktService {
 
 
 
+
+		//String xmlRDFData = addRDFDataToXML(signedXml);
+
+		//insertMetadata(xmlRDFData, String.valueOf(aktID));
+
 	    insertDocument("/akti/"+akt1.getId() + ".xml", stream);
 
 		@SuppressWarnings("unused")
@@ -691,6 +752,9 @@ public class AktService {
 		return "ok";
 
 	}
+
+
+
 
 	public static XMLGregorianCalendar getXMLGregorianCalendarNow()
 
@@ -709,6 +773,10 @@ public class AktService {
             datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
         return now;
     }
+
+
+
+
 
 	private void insertMetadata(String xmlRDFData, String aktID) {
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
@@ -768,7 +836,10 @@ public class AktService {
 		rdfGen.setPredicate("Naziv", RDFDataType.STRING, "naziv");
 		rdfGen.setPredicate("ID", RDFDataType.STRING, "id");
 		rdfGen.setPredicate("Status", RDFDataType.STRING, "status");
-		rdfGen.setPredicate("Datum_predlaganja", RDFDataType.STRING, "datumPredlaganja");
+
+		rdfGen.setPredicate("Datum_predlaganja", RDFDataType.DATE, "datum_predlaganja");
+
+
 		rdfGen.setPredicate("Odbornik", RDFDataType.STRING, "odbornik");
 		rdfGen.setSubject(id);
 		return rdfGen.getDocumentAsString();
@@ -876,13 +947,13 @@ public class AktService {
 
 		String singString = saveDocument(doc);
 
+
 		return singString;
 	}
 
 	public static void insertDocument(String path, InputStream in) {
 
-		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
-				Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
 
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();

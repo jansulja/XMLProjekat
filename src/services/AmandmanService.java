@@ -175,7 +175,7 @@ public class AmandmanService {
 
 		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s  WHERE { ?s ?p ?o  FILTER(REGEX(STR(?p),\"akt_id\"))  FILTER(REGEX(STR(?o),\""+id+"\")) }");
 
-		
+
 
 		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
 		//String json = handleResultsJSON(resultsHandle);

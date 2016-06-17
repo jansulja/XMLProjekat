@@ -1,10 +1,14 @@
 package xml.crl;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -35,37 +39,78 @@ import org.bouncycastle.x509.X509V2CRLGenerator;
 public class CheckCRL {
 	private static final String KEY_STORE_FILE = "C:/Users/Windows7/git/XMLProjekat/data/sgns.jks";
 	private static X509CRL crl ;
-	
+
 	public static boolean checkInCrl(BigInteger serialNumber) {
 		if (crl.getRevokedCertificate(serialNumber) != null){
 			return true;
 		}
 		return false;
-		
-		
+
+
 	}
-	
+
 	private void loadCRL (String path) {
-		
+
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("C:/Users/Windows7/git/XMLProjekat/data/crl.bin");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ObjectInputStream ois;
+		try {
+			ois = new ObjectInputStream(fis);
+			X509CRL c = (X509CRL) ois.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
 	}
-	
+
 	private void saveCRL (String path){
-		
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream("C:/Users/Windows7/git/XMLProjekat/data/crl.bin");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(this.crl.getEncoded());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CRLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
 	}
-	
+
 	public void addCertificate (X509Certificate cert, int reason) {
 		X509V2CRLGenerator   crlGen = new X509V2CRLGenerator();
 		Date                 now = new Date();
 		X509Certificate      caCrlCert;
 		PrivateKey           caCrlPrivateKey ;
 
-		
-		
-		
+
+
+
 		PrivateKey privateKey = readPrivateKey ("sgns", "sgns", "sgns");
 		Certificate certificate =  readCertificate("sgns", "sgns") ;
 		caCrlCert = (X509Certificate)certificate;
-		
+
 	    crlGen.setIssuerDN(new X500Principal("sgns"));
 	    crlGen.setThisUpdate(now);
 	    crlGen.setNextUpdate(new Date(now.getTime() + 50));
@@ -76,7 +121,7 @@ public class CheckCRL {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
+
 	    crlGen.addCRLEntry(cert.getSerialNumber(), now, reason);
 	    try {
 			crl = crlGen.generate(privateKey);
@@ -85,12 +130,12 @@ public class CheckCRL {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
-	    
-		
+
+
+
 	}
-	
-	
+
+
 	/**
 	 * Ucitava sertifikat is KS fajla
 	 * alias primer
@@ -102,15 +147,15 @@ public class CheckCRL {
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
 			ks.load(in, kspassword.toCharArray());
-			
+
 			if(ks.isKeyEntry(alias)) {
 				Certificate cert = ks.getCertificate(alias);
 				return cert;
-				
+
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -129,9 +174,9 @@ public class CheckCRL {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
+
 	/**
 	 * Ucitava privatni kljuc is KS fajla
 	 * alias primer
@@ -143,15 +188,15 @@ public class CheckCRL {
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
 			ks.load(in, kspassword.toCharArray());
-			
+
 			if(ks.isKeyEntry(alias)) {
 				PrivateKey pk = (PrivateKey) ks.getKey(alias, apassword.toCharArray());
-				
+
 				return pk;
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -173,38 +218,43 @@ public class CheckCRL {
 		} catch (UnrecoverableKeyException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
-	
-	
+
+
+
 	private void init () throws CertificateException, CRLException, IOException, InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException {
-		
+
 		X509V2CRLGenerator   crlGen = new X509V2CRLGenerator();
 		Date                 now = new Date();
 		X509Certificate      caCrlCert;
 		PrivateKey           caCrlPrivateKey ;
 
-		
-		
-		
+
+
+
 		PrivateKey privateKey = readPrivateKey ("sgns", "sgns", "sgns");
 		Certificate certificate =  readCertificate("sgns", "sgns") ;
 		caCrlCert = (X509Certificate)certificate;
-		
+
 	    crlGen.setIssuerDN(caCrlCert.getIssuerX500Principal());
 	    crlGen.setThisUpdate(now);
 	    crlGen.setNextUpdate(new Date(now.getTime() + 50));
 	    crlGen.setSignatureAlgorithm("SHA1withRSA");
 	    crl = crlGen.generate(privateKey);
+	  
 	    System.out.println(crl);
 
 
-		 
+
+	    saveCRL(null);
+	    loadCRL(null);
+
+
 	}
 
-	
-	
+
+
 	public static void main(String[] args) {
 		CheckCRL sign = new CheckCRL();
 		try {

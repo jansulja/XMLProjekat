@@ -119,7 +119,10 @@ public class RDFDataGenerator {
 			break;
 
 		case DATE:
+
 			type = "xsbs:date";
+
+
 			break;
 		}
 
