@@ -22,9 +22,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-
-import java.text.Format;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -42,9 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
 import javax.ws.rs.core.Response;
-
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -76,6 +71,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -101,21 +98,13 @@ import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
-
 import dom.util.DOMUtility;
 import init.ContextClass;
-
-import database.ConfigRemote;
-
 import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
-
-import rs.ac.uns.ftn.xws.util.ServiceException;
-
 import model.metadata.AktMetaData;
 import model.view.Upit;
-
 import session.AktDaoLocal;
 import session.OdbornikDaoLocal;
 import util.DOMUtil;
@@ -124,8 +113,6 @@ import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
 import xml.signature.SignDocument;
 import xml.xslfo.XSLFOTransformer;
-import rs.ac.uns.ftn.examples.util.Util;
-import rs.ac.uns.ftn.examples.util.Util.ConnectionProperties;
 
 @Path("/akt")
 public class AktService {
@@ -622,7 +609,7 @@ public class AktService {
 		String metadataPutanja = new String("akt/" + id[3] + "/metadata");
 		String xmlPutanja = new String("/akti/" + id[3] + ".xml");
 		//id[3] je ID akta a id[7] je status
-		updateMetaData(id[3],id[7]);
+		//updateMetaData(id[3],id[7]);
 		// ovaj je za xml fajl
 		// GenericDocumentManager docMgr = client.newDocumentManager();
 
@@ -646,19 +633,25 @@ public class AktService {
 
 		// access the document content
 		Document document = handle.get();
-		
+
 		NodeList rootName = document.getDocumentElement().getElementsByTagName("Status");
 		Element element = (Element) rootName.item(0);
 
 		element.setTextContent("");
 		element.setTextContent(id[7]);
 
+
 		DOMHandle handle2 = new DOMHandle(document);
 		docMgr.write(xmlPutanja, handle2);
 
+
+		String xmlRDFData = addRDFDataToXML(DOMUtility.toString(document), id[3]);
+
+		insertMetadata(xmlRDFData, id[3]);
+
 		log.info("asd" + id[3] + id[7]);
 
-		return "ok";
+		return "[]";
 	}
 
 	@POST
@@ -1366,13 +1359,14 @@ public class AktService {
 		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
 		//SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT *  WHERE { ?s ?p ?o  FILTER(REGEX(STR(?p),\"akt_id\"))  FILTER(REGEX(STR(?o),\""+id+"\")) }");
 
-		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition(" DELETE DATA { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"PREDLOZEN\" }");
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("DELETE { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"PREDLOZEN\" }");
+
 
 		sparqlQueryManager.executeUpdate(query);
 
-		query = sparqlQueryManager.newQueryDefinition(" INSERT DATA { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"USVOJEN\" }");
-
-		sparqlQueryManager.executeUpdate(query);
+//		query = sparqlQueryManager.newQueryDefinition(" INSERT DATA { <http://www.parlament.gov.rs/akt/"+aktId+"> <http://www.parlament.gov.rs/akt/predicate/status> \"USVOJEN\" }");
+//
+//		sparqlQueryManager.executeUpdate(query);
 
 	}
 
@@ -1479,6 +1473,155 @@ public class AktService {
 
 
 
+
+	}
+
+	@GET
+	@Path("/izmeni/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String izmeniAkt (@PathParam("id") String id){
+
+
+
+		String aktId = "2016-06-20-2388";
+		String redniBrClana = "4";
+		String izmenaTeksta = "Neki tekst koji se upisuje u clan";
+		String vrstaIzmene = "DODAJ"; // DODAJ   PROMENI
+
+
+
+		String pathToAkt = "/akti/"+aktId + ".xml" ;
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(pathToAkt, handle);
+
+		// access the document content
+		Document doc = handle.get();
+//
+//		String akt = saveDocument(doc);
+//		Akt akt1 = xmlStringToObject(akt);
+//		if(akt1.getDeo().isEmpty()){
+//			akt1.getDeo().iterator()
+//		}
+
+
+
+		System.out.println(doc.getElementsByTagName("Clan").getLength());
+		// update staff attribute
+		if (vrstaIzmene.equals("OBRISI")){
+			for (int i=0; i<doc.getElementsByTagName("Pododeljak").getLength(); i++) {
+
+				Node pododeljak = doc.getElementsByTagName("Pododeljak").item(i);
+
+
+				if (pododeljak.hasChildNodes()) {
+					NodeList attr = pododeljak.getChildNodes();
+					for (int j=0; j<attr.getLength(); j++) {
+
+						Node clan = attr.item(j);
+
+										if(clan.hasAttributes()){
+											NamedNodeMap atribut = clan.getAttributes();
+											Node nodeAttr = atribut.getNamedItem("redni_broj");
+											if (redniBrClana.equals(nodeAttr.getTextContent())) {
+												pododeljak.removeChild(clan);
+
+											}
+										}
+					}
+				}
+
+			}
+		} else {
+
+
+			for (int i=0; i<doc.getElementsByTagName("Clan").getLength(); i++) {
+
+				Node clan = doc.getElementsByTagName("Clan").item(i);
+
+
+				if(clan.hasAttributes()){
+					NamedNodeMap atribut = clan.getAttributes();
+					Node nodeAttr = atribut.getNamedItem("redni_broj");
+					//nodeAttr.getTextContent();
+
+
+					System.out.println(nodeAttr.getTextContent());
+					if (clan.hasChildNodes() && redniBrClana.equals(nodeAttr.getTextContent()) ){
+
+						System.out.println(i);
+						NodeList attr = clan.getChildNodes();
+						System.out.println(attr.getLength());
+
+						for (int ii = 0; ii<attr.getLength(); ii++) {
+							Node kojiNode = attr.item(ii);
+							if(kojiNode.hasChildNodes()) {
+
+								NodeList stavTekst = kojiNode.getChildNodes();
+
+								for (int iii = 0; iii<stavTekst.getLength(); iii++) {
+
+									Node stavTekstNode = stavTekst.item(iii);
+									//stavTekstNode.TEXT_NODE
+//									System.out.println("tip:");
+									if (stavTekstNode != null) {
+									short tip = stavTekstNode.getNodeType() ;
+									System.out.println(tip);
+//									System.out.println("tip");
+										if (stavTekstNode.getNodeName().equals("Tekst"))	{
+											//Node child = kojiNode.getFirstChild().getFirstChild().getNextSibling();
+
+												System.out.println(tip);
+												System.out.println("Ovo  je tip");
+												System.out.println(stavTekstNode.getNodeType());
+												if(vrstaIzmene.equals("DODAJ")){
+													stavTekstNode.setTextContent(stavTekstNode.getTextContent() +"\n" + izmenaTeksta);
+												} else if (vrstaIzmene.equals("PROMENI")) {
+													stavTekstNode.setTextContent(izmenaTeksta);
+													System.out.println(stavTekstNode.getNodeType());
+
+												}
+
+											System.out.println(stavTekstNode.getTextContent());
+											//System.out.println(child.getBaseURI());
+											//System.out.println(stavTekstNode.getNodeValue());
+										}
+
+								}
+								}
+							}
+
+						}
+					}
+				//
+				}
+			}
+		}
+
+		InputStream stream = new ByteArrayInputStream(saveDocument(doc).getBytes(StandardCharsets.UTF_8));
+
+
+
+
+		//String xmlRDFData = addRDFDataToXML(signedXml);
+
+		//insertMetadata(xmlRDFData, String.valueOf(aktID));
+
+	    insertDocument("/akti/"+aktId + ".xml", stream);
+		//Node nodeAttr = attr.getNamedItem("Naziv");
+		//nodeAttr.setTextContent("2");
+
+
+		client.release();
+
+		return "ok";
 
 	}
 
