@@ -92,8 +92,69 @@ $scope.searchAktove = function() {
 			});
 
 }
+$scope.dalJePredsednik = function(){
+		if($rootScope.current.role === 'P'){
+			return false;
+		}
+		else{
+		return true;
+		}
+	}
+
+$scope.dalJeOdbornik = function (){
+	if($rootScope.current.role ==='O'){
+		return true;
+	}else{
+		return false;
+	}
+}
+	
+	
+	$scope.kojiNiz = function (akt){
+		if(akt.status ==="PREDLOZEN"){
+			$scope.names = ["PREDLOZEN","USVOJEN_U_NACELU", "ODBIJEN"];
+		}
+		if(akt.status === "USVOJEN_U_NACELU"){
+					$scope.names = ["USVOJEN_U_NACELU","USVOJEN_U_POJEDINOSTIMA", "ODBIJEN"];
+		}
+		if(akt.status === "USVOJEN_U_POJEDINOSTIMA" ){
+			$scope.names = ["USVOJEN_U_POJEDINOSTIMA","USVOJEN_U_CELINI", "ODBIJEN"];
+		}
+				
+		if(akt.status === "USVOJEN_U_CELINI"){
+			$scope.names = ["USVOJEN_U_CELINI"];
+		}
+
+		if(akt.status === "ODBIJEN"){
+			$scope.names = ["ODBIJEN"];
+		}
+
+		if(akt.status ==="USVOJEN"){
+			$scope.names = ["USVOJEN_U_CELINI"]
+		}
+
+		return $scope.names;
+	}
+	$scope.izmeniAkt = function (akt){
+
+		var deferred = $q.defer();
+		var zaPoslati = {id: akt.id , status: akt.status};
+
+					$http({
+					url: "https://localhost:8443/xws/api/akt/update",
+					method: "POST",
+					data: zaPoslati,
+					headers: { "Content-Type": 'application/json' }
+				}).success(function (data) {
+					deferred.resolve(data);
+				});
+
+				var promise = deferred.promise;
+				promise.then(function (data) {
 
 
+				});
+	}
 	$scope.show = function(akt,event){
 
 //		var $httpDefaultCache = $cacheFactory.get('$http');
@@ -165,7 +226,8 @@ $scope.searchAktove = function() {
 			var promise = deferred.promise;
 			promise.then(function (data) {
 
-
+				var index = $scope.akts.indexOf(akt);
+				$scope.akts.splice(index, 1);
 
 
 			});

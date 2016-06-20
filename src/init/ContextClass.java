@@ -11,8 +11,10 @@ import javax.servlet.ServletContextListener;
 
 import model.Gradjanin;
 import model.Odbornik;
+import model.Predsednik;
 import session.GradjaninDaoLocal;
 import session.OdbornikDaoLocal;
+import session.PredsednikDaoLocal;
 
 public class ContextClass implements ServletContextListener {
 
@@ -24,6 +26,9 @@ public class ContextClass implements ServletContextListener {
 
 	@EJB
 	private OdbornikDaoLocal odbornikDao;
+	
+	@EJB
+	private PredsednikDaoLocal predsednikDao;
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
@@ -48,7 +53,24 @@ public class ContextClass implements ServletContextListener {
 		gAdmin.setPol("M");
 		gAdmin.setPrezime("Adminovic");
 
-
+		Predsednik p1 = new Predsednik();
+		p1.setBrojlicne(11);
+		p1.setBrojTelefona(11);
+		p1.setDatumrodjenja(new Date());
+		p1.setDrzava("Srbija");
+		p1.setEmail("p1@p1.com");
+		p1.setIme("Zika");
+		p1.setJMBG(11);
+		p1.setMestoRodjenja("Novi Sad");
+		p1.setOdbornickaGrupa("NSS");
+		p1.setOpstinaRodjenja("Novi Sad");
+		p1.setPlata(1200.00);
+		p1.setPol("M");
+		p1.setPrezime("Zikic");
+		p1.setStranka("UJEBp");
+		p1.setZvanje("Dipl. Ing. Pilicarstva");
+		
+		
 		Odbornik o1 = new Odbornik();
 		o1.setBrojlicne(11);
 		o1.setBrojTelefona(11);
@@ -87,6 +109,7 @@ public class ContextClass implements ServletContextListener {
 			gAdmin.setPassword(getPasswordHash("g1"));
 			o1.setPassword(getPasswordHash("o1"));
 			o2.setPassword(getPasswordHash("o2"));
+			p1.setPassword(getPasswordHash("p1"));
 		} catch (NoSuchAlgorithmException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -97,7 +120,7 @@ public class ContextClass implements ServletContextListener {
 
 //		try {
 //
-//			odbornikDao.persist(o1);
+//			predsednikDao.persist(p1);
 //		} catch (NoSuchFieldException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();

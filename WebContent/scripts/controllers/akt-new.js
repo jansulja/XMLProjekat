@@ -3,8 +3,9 @@
 angular.module('akt-new',[])
 
 .controller('akt-newCtrl', function($scope,$q,$http,$modal,$rootScope,$location){
-
-
+	if($rootScope.current.role != 'O'){
+		$location.path('unauthorised');
+	}
 		$scope.pass = function (size) {
 		    var modalInstance = $modal.open({
 		      templateUrl: 'views/modal-pass.html',
@@ -40,6 +41,9 @@ angular.module('akt-new',[])
 
 
 })
+
+
+
 
 .directive("rootElementAkt", function() {
     return {

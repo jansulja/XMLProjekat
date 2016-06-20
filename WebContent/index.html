@@ -45,11 +45,8 @@
       <div class="header">
         <ul class="nav nav-pills pull-right"  >
           <li class="active"><a ng-click="about()">About</a></li>
-          <li class="active"><a ng-href="#/gradjanin-list">Gradjani</a></li>
           <li class="active"><a ng-href="#/akt-list">Pravni Akti</a></li>
           <li class="active"><a ng-href="#/amandman-list">Amandmani</a></li>
-          <li class="active"><a ng-href="#/">Odbornici</a></li>
-          <li class="active"><a ng-href="#/">Profil</a></li>
           <li  ng-if="!isLoginPage()" ><a ng-href="#/">Home</a></li>
           <li><a ng-if="!isLoginPage()" ng-click="logout()">Logout</a></li>
           <li ng-if="!isLoginPage()"><a ng-href="#/">{{current.ime}}</a></li>
