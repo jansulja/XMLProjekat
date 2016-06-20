@@ -9,7 +9,6 @@ angular.module('akt-list',[])
 
 		var deferred = $q.defer();
 		$scope.akts = [];
-
 		$http({
 		  method: 'GET',
 		  url: 'https://localhost:8443/xws/api/akt/list',
@@ -110,6 +109,72 @@ $scope.dalJeOdbornik = function (){
 }
 
 
+
+$scope.isCurrent = function(akt){
+			if(akt.odbornik === $rootScope.current.email) {
+				return false;
+			}else{
+				return true;
+			}
+
+
+
+
+		}
+
+$scope.exportPDF = function(akt){
+	var deferred = $q.defer();
+
+			$http({
+				  method: 'GET',
+				  url: 'https://localhost:8443/xws/api/akt/exportPDF/' + akt.id,
+				  headers: { "Content-Type": 'application/json' }
+				}).success(function (data) {
+				    // this callback will be called asynchronously
+				    // when the response is available
+				    //$scope.akts.push(response.data);
+					deferred.resolve(data);
+
+				//  }, function errorCallback(response) {
+				    // called asynchronously if an error occurs
+				    // or server returns response with an error status.
+
+				  });
+				var promise = deferred.promise;
+				promise.then(function (data) {
+
+					//$scope.akts = data;
+
+				});
+}
+
+$scope.exportPDF = function(akt){
+	var deferred = $q.defer();
+
+			$http({
+				  method: 'GET',
+				  url: 'https://localhost:8443/xws/api/akt/exportHTML/' + akt.id,
+				  headers: { "Content-Type": 'application/json' }
+				}).success(function (data) {
+				    // this callback will be called asynchronously
+				    // when the response is available
+				    //$scope.akts.push(response.data);
+					deferred.resolve(data);
+
+				//  }, function errorCallback(response) {
+				    // called asynchronously if an error occurs
+				    // or server returns response with an error status.
+
+				  });
+				var promise = deferred.promise;
+				promise.then(function (data) {
+
+					//$scope.akts = data;
+
+				});
+}
+
+
 	$scope.kojiNiz = function (akt){
 		if(akt.status ==="PREDLOZEN"){
 			$scope.names = ["PREDLOZEN","USVOJEN_U_NACELU", "ODBIJEN"];
@@ -136,7 +201,6 @@ $scope.dalJeOdbornik = function (){
 		return $scope.names;
 	}
 	$scope.izmeniAkt = function (akt){
-
 		var deferred = $q.defer();
 		var zaPoslati = {id: akt.id , status: akt.status};
 
