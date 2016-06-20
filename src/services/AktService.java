@@ -122,8 +122,7 @@ import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
 import xml.signature.SignDocument;
-
-
+import xml.xslfo.XSLFOTransformer;
 import rs.ac.uns.ftn.examples.util.Util;
 import rs.ac.uns.ftn.examples.util.Util.ConnectionProperties;
 
@@ -1408,6 +1407,50 @@ public class AktService {
 			}else{
 				return Response.status(Status.FORBIDDEN).build() ;
 			}
+	}
+
+	@GET
+	@Path("/exportPDF/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void exportPDF(@PathParam("id") String id) {
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+		DOMHandle handle = new DOMHandle();
+		docMgr.read("/akti/"+id+".xml", handle);
+		Document document = handle.get();
+		client.release();
+
+		XSLFOTransformer transformer = new XSLFOTransformer();
+		transformer.aktToPDF(document, id);
+
+
+
+
+	}
+
+	@GET
+	@Path("/exportHTML/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void exportHTML(@PathParam("id") String id) {
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+		DOMHandle handle = new DOMHandle();
+		docMgr.read("/akti/"+id+".xml", handle);
+		Document document = handle.get();
+		client.release();
+
+		XSLFOTransformer transformer = new XSLFOTransformer();
+		transformer.aktToHTML(document, id);
+
+
+
+
 	}
 
 
