@@ -108,8 +108,8 @@ $scope.dalJeOdbornik = function (){
 		return false;
 	}
 }
-	
-	
+
+
 	$scope.kojiNiz = function (akt){
 		if(akt.status ==="PREDLOZEN"){
 			$scope.names = ["PREDLOZEN","USVOJEN_U_NACELU", "ODBIJEN"];
@@ -120,7 +120,7 @@ $scope.dalJeOdbornik = function (){
 		if(akt.status === "USVOJEN_U_POJEDINOSTIMA" ){
 			$scope.names = ["USVOJEN_U_POJEDINOSTIMA","USVOJEN_U_CELINI", "ODBIJEN"];
 		}
-				
+
 		if(akt.status === "USVOJEN_U_CELINI"){
 			$scope.names = ["USVOJEN_U_CELINI"];
 		}
@@ -151,6 +151,7 @@ $scope.dalJeOdbornik = function (){
 
 				var promise = deferred.promise;
 				promise.then(function (data) {
+
 
 
 				});

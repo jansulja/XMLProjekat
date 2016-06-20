@@ -26,7 +26,7 @@ public class ContextClass implements ServletContextListener {
 
 	@EJB
 	private OdbornikDaoLocal odbornikDao;
-	
+
 	@EJB
 	private PredsednikDaoLocal predsednikDao;
 
@@ -59,7 +59,7 @@ public class ContextClass implements ServletContextListener {
 		p1.setDatumrodjenja(new Date());
 		p1.setDrzava("Srbija");
 		p1.setEmail("p1@p1.com");
-		p1.setIme("Zika");
+		p1.setIme("Predsednik 1");
 		p1.setJMBG(11);
 		p1.setMestoRodjenja("Novi Sad");
 		p1.setOdbornickaGrupa("NSS");
@@ -69,8 +69,8 @@ public class ContextClass implements ServletContextListener {
 		p1.setPrezime("Zikic");
 		p1.setStranka("UJEBp");
 		p1.setZvanje("Dipl. Ing. Pilicarstva");
-		
-		
+
+
 		Odbornik o1 = new Odbornik();
 		o1.setBrojlicne(11);
 		o1.setBrojTelefona(11);
