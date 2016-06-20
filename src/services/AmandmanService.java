@@ -30,11 +30,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.DatabaseClientFactory;
+import com.marklogic.client.document.XMLDocumentManager;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.FileHandle;
 import com.marklogic.client.io.JacksonHandle;
@@ -45,16 +48,12 @@ import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
-import model.Akt;
 import model.Gradjanin;
 import model.Odbornik;
 import model.amandman.Amandman;
 import model.amandman.AmandmanDodavanje;
 import model.amandman.StatusAmandmana;
-import model.metadata.AktMetaData;
 import model.metadata.AmandmanMetaData;
-import rs.ac.uns.ftn.xws.util.Authenticate;
-import util.AuthenticateOdbornik;
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
@@ -118,6 +117,60 @@ public class AmandmanService {
 
 
 	}
+	@POST
+	@Path("/update")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String updateAmandman(String lista) {
+		String[] id = lista.split("\"");
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+	//	String metadataPutanja = new String("akt/" + id[3] + "/metadata");
+		String xmlPutanja = new String("/amandmani/" + id[3] + ".xml");
+		//id[3] je ID akta a id[7] je status
+		//updateMetaData(id[3],id[7]);
+		// ovaj je za xml fajl
+		// GenericDocumentManager docMgr = client.newDocumentManager();
+
+		// Create a document manager to work with XML files.
+		// ovaj je za metadata
+		GraphManager graphManager = client.newGraphManager();
+		// Set the default media type (RDF/XML)
+		graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
+
+		// create a handle to receive the document content
+
+		// read the document content
+		// create a manager for XML documents
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(xmlPutanja, handle);
+
+		// access the document content
+		Document document = handle.get();
+		
+		NodeList rootName = document.getDocumentElement().getElementsByTagName("Status_amandmana");
+		Element element = (Element) rootName.item(0);
+
+		element.setTextContent("");
+		element.setTextContent(id[7]);
+
+		DOMHandle handle2 = new DOMHandle(document);
+		docMgr.write(xmlPutanja, handle2);
+
+		log.info("asd" + id[3] + id[7]);
+		
+		return "ok";
+	}
+	
+	
+	
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

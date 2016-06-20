@@ -17,7 +17,15 @@
 				<td>{{amandman.akt_id}}</td>
 				<td>{{amandman.datumPredlaganja}}</td>
 				<td>{{amandman.odbornik}}</td>
-				<td>{{amandman.status}}</td>
+				<td><div ng-show="dalJePredsednik()">{{amandman.status}}</div>
+
+				<div ng-hide="dalJePredsednik()">	<select ng-model="amandman.status" ng-init="amandman.status" 	
+									ng-options="x for x in kojiNiz(amandman)"></select>
+							<button type="button" class="btn btn-default btn-md"
+						ng-click="izmeniAmandman(amandman)">
+						<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span>
+						Sacuvaj izmene
+					</button></div></td>
 
 				<td>
 					<button ng-if="isCurrent(amandman)" type="button" class="btn btn-default btn-md"

@@ -10,11 +10,11 @@
 						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga</span>
 					</button>
 					
-					<div ng-show="dalJeOdbornik()">
+					<span ng-show="dalJeOdbornik()">
 					<button type="button" class="btn btn-default" ng-click="predloziAkt()">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Predlo&#382;i akt
 					</button>
-					</div>
+					</span>
 				</h4>
 			</div>
 			<div  id="collapse1" class="panel-collapse collapse">
@@ -136,14 +136,17 @@
 						<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span>
 						Sacuvaj izmene
 					</button></div>
+
+				
+
 				</td>
 
-				<td><div ng-hide="dalJePredsednik()">
+				<td><span ng-hide="isCurrent(akt)">
 					<button type="button" class="btn btn-default btn-md"
 						ng-click="delete(akt)">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 						Obrisi
-					</button></div>
+					</button></span>
 
 					<button type="button" class="btn btn-default btn-md"
 						ng-click="predloziAmandman(akt)">
@@ -157,6 +160,15 @@
 						Pregled Amandmana
 					</button>
 
+					<button type="button" class="btn btn-default btn-md" ng-click="exportPDF(akt)">
+						<span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+						Export kao PDF
+					</button>
+
+					<button type="button" class="btn btn-default btn-md" ng-click="exportHTML(akt)">
+						<span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+						Export kao HTML
+					</button>
 				</td>
 				
 				
