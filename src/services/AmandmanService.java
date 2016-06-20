@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -31,6 +32,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -48,11 +51,14 @@ import com.marklogic.client.semantics.SPARQLQueryDefinition;
 import com.marklogic.client.semantics.SPARQLQueryManager;
 
 import database.Config;
+import dom.util.DOMUtility;
 import model.Gradjanin;
 import model.Odbornik;
 import model.amandman.Amandman;
 import model.amandman.AmandmanDodavanje;
+import model.amandman.Referenca;
 import model.amandman.StatusAmandmana;
+import model.amandman.TipAmandmana;
 import model.metadata.AmandmanMetaData;
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
@@ -154,7 +160,17 @@ public class AmandmanService {
 
 		// access the document content
 		Document document = handle.get();
-		
+
+
+
+
+		if(id[7].equals("USVOJEN")){
+
+			Amandman a = xmlStringToObject(DOMUtility.toString(document));
+			izmeniAkt(a);
+		}
+
+
 		NodeList rootName = document.getDocumentElement().getElementsByTagName("Status_amandmana");
 		Element element = (Element) rootName.item(0);
 
@@ -164,13 +180,18 @@ public class AmandmanService {
 		DOMHandle handle2 = new DOMHandle(document);
 		docMgr.write(xmlPutanja, handle2);
 
+
+		String amandmanWithRDFMeta = addRDFDataToXML(DOMUtility.toString(document),id[3]);
+		insertMetadata(amandmanWithRDFMeta, id[3]);
+
+
 		log.info("asd" + id[3] + id[7]);
-		
+
 		return "ok";
 	}
-	
-	
-	
+
+
+
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -560,6 +581,159 @@ public class AmandmanService {
 	public void test(){
 
 
+
+	}
+
+
+	public String izmeniAkt (Amandman a){
+
+
+
+		String aktId = a.getAktId();
+
+
+		JAXBElement<Referenca> ref =  (JAXBElement<Referenca>) a.getSadrzaj().getContent().get(1);
+		Referenca r = ref.getValue();
+
+		String redniBrClana = String.valueOf(r.getClanRef());
+
+		String izmenaTeksta = a.getSadrzaj().getContent().get(0).toString();
+		//String vrstaIzmene = "DODAJ"; // DODAJ   PROMENI
+		TipAmandmana vrstaIzmene = a.getTip();
+
+
+		String pathToAkt = "/akti/"+aktId + ".xml" ;
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(pathToAkt, handle);
+
+		// access the document content
+		Document doc = handle.get();
+//
+//		String akt = saveDocument(doc);
+//		Akt akt1 = xmlStringToObject(akt);
+//		if(akt1.getDeo().isEmpty()){
+//			akt1.getDeo().iterator()
+//		}
+
+
+
+		System.out.println(doc.getElementsByTagName("Clan").getLength());
+		// update staff attribute
+		if (vrstaIzmene.name().equals("OBRISI")){
+			for (int i=0; i<doc.getElementsByTagName("Pododeljak").getLength(); i++) {
+
+				Node pododeljak = doc.getElementsByTagName("Pododeljak").item(i);
+
+
+				if (pododeljak.hasChildNodes()) {
+					NodeList attr = pododeljak.getChildNodes();
+					for (int j=0; j<attr.getLength(); j++) {
+
+						Node clan = attr.item(j);
+
+										if(clan.hasAttributes()){
+											NamedNodeMap atribut = clan.getAttributes();
+											Node nodeAttr = atribut.getNamedItem("redni_broj");
+											if (redniBrClana.equals(nodeAttr.getTextContent())) {
+												pododeljak.removeChild(clan);
+
+											}
+										}
+					}
+				}
+
+			}
+		} else {
+
+
+			for (int i=0; i<doc.getElementsByTagName("Clan").getLength(); i++) {
+
+				Node clan = doc.getElementsByTagName("Clan").item(i);
+
+
+				if(clan.hasAttributes()){
+					NamedNodeMap atribut = clan.getAttributes();
+					Node nodeAttr = atribut.getNamedItem("redni_broj");
+					//nodeAttr.getTextContent();
+
+
+					System.out.println(nodeAttr.getTextContent());
+					if (clan.hasChildNodes() && redniBrClana.equals(nodeAttr.getTextContent()) ){
+
+						System.out.println(i);
+						NodeList attr = clan.getChildNodes();
+						System.out.println(attr.getLength());
+
+						for (int ii = 0; ii<attr.getLength(); ii++) {
+							Node kojiNode = attr.item(ii);
+							if(kojiNode.hasChildNodes()) {
+
+								NodeList stavTekst = kojiNode.getChildNodes();
+
+								for (int iii = 0; iii<stavTekst.getLength(); iii++) {
+
+									Node stavTekstNode = stavTekst.item(iii);
+									//stavTekstNode.TEXT_NODE
+//									System.out.println("tip:");
+									if (stavTekstNode != null) {
+									short tip = stavTekstNode.getNodeType() ;
+									System.out.println(tip);
+//									System.out.println("tip");
+										if (stavTekstNode.getNodeName().equals("Tekst"))	{
+											//Node child = kojiNode.getFirstChild().getFirstChild().getNextSibling();
+
+												System.out.println(tip);
+												System.out.println("Ovo  je tip");
+												System.out.println(stavTekstNode.getNodeType());
+												if(vrstaIzmene.name().equals("DODAJ")){
+													stavTekstNode.setTextContent(stavTekstNode.getTextContent() +"\n" + izmenaTeksta);
+												} else if (vrstaIzmene.name().equals("PROMENI")) {
+													stavTekstNode.setTextContent(izmenaTeksta);
+													System.out.println(stavTekstNode.getNodeType());
+
+												}
+
+											System.out.println(stavTekstNode.getTextContent());
+											//System.out.println(child.getBaseURI());
+											//System.out.println(stavTekstNode.getNodeValue());
+										}
+
+								}
+								}
+							}
+
+						}
+					}
+				//
+				}
+			}
+		}
+
+		InputStream stream = new ByteArrayInputStream(AktService.saveDocument(doc).getBytes(StandardCharsets.UTF_8));
+
+
+
+
+		//String xmlRDFData = addRDFDataToXML(signedXml);
+
+		//insertMetadata(xmlRDFData, String.valueOf(aktID));
+
+	    AktService.insertDocument("/akti/"+aktId + ".xml", stream);
+		//Node nodeAttr = attr.getNamedItem("Naziv");
+		//nodeAttr.setTextContent("2");
+
+
+		client.release();
+
+		return "ok";
 
 	}
 

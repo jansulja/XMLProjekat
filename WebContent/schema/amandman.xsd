@@ -8,6 +8,7 @@
                 <xs:element name="Naziv" type="NazivAmandmana"/>
                 <xs:element name="Sadrzaj" type="Sadrzaj" maxOccurs="1" minOccurs="1"/>
             </xs:sequence>
+            <xs:attribute default="PROMENI" name="tip" type="Tip_amandmana" use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:simpleType name="NazivAmandmana">
@@ -29,4 +30,11 @@
             <xs:element maxOccurs="unbounded" minOccurs="1" name="Referenca" type="Referenca"/>
         </xs:sequence>
     </xs:complexType>
+    <xs:simpleType name="Tip_amandmana">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DODAJ"/>
+            <xs:enumeration value="PROMENI"/>
+            <xs:enumeration value="OBRISI"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>

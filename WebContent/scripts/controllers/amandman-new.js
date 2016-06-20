@@ -37,6 +37,7 @@ angular.module('amandman-new',[])
 			var promise = deferred.promise;
 			promise.then(function (data) {
 				console.log('success');
+				$location.path('amandman-list');
 			});
 
 

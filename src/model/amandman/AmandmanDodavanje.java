@@ -27,8 +27,13 @@ public class AmandmanDodavanje {
 		String s1 = string.replaceAll("xmlns=\\\\", "xmlns=");
 		String s2 = s1.replaceAll("http://www.parlament.gov.rs/amandman\\\\", "http://www.parlament.gov.rs/amandman");
 
+
+
+		String s3 = s2.replaceAll("\\\\\"", "\"");
+		String s4 = s3.replaceAll("\\\\n", " ");
+
 		// TODO Auto-generated method stub
-		return s2;
+		return s4;
 	}
 	public String getAmandman() {
 		return amandman;

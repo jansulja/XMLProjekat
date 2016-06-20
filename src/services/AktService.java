@@ -1051,7 +1051,7 @@ public class AktService {
 	/**
 	 * Snima DOM u XML fajl
 	 */
-	private String saveDocument(Document doc) {
+	public static String saveDocument(Document doc) {
 		String xmlFile = null;
 		try {
 			StringWriter writer = new StringWriter();
