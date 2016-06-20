@@ -71,6 +71,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -134,19 +135,18 @@ public class AktService {
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
 
-
 		// Create a SPARQL query manager to query RDF datasets
 		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
 
-				// Initialize DOM results handle
+		// Initialize DOM results handle
 		DOMHandle domResultsHandle = new DOMHandle();
-
 
 		// Initialize Jackson results handle
 		JacksonHandle resultsHandle = new JacksonHandle();
 		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
 
-		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
+		// Initialize SPARQL query definition - retrieves all triples from RDF
+		// dataset
 		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT * WHERE { ?s ?p ?o }");
 
 		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
@@ -156,73 +156,57 @@ public class AktService {
 
 	}
 
-
-
-
 	@POST
-    @Path("/search")
+	@Path("/search")
 
-    public void search(Upit upit) {
+	public void search(Upit upit) {
 		String id;
 		if (upit.getId().isEmpty()) {
-			id = "" ;
-		}else {
-			id =  "?s"
-				+ "?p"
-				+ "\"" + upit.getId() + "\""
-				+".";
+			id = "";
+		} else {
+			id = "?s" + "?p" + "\"" + upit.getId() + "\"" + ".";
 		}
 
 		String naziv;
 		if (upit.getNaziv().isEmpty()) {
-			naziv = "" ;
-		}else {
-			naziv =  "?s"
-					+ "?p"
-					+ "\"" + upit.getNaziv() + "\""
-					+".";
+			naziv = "";
+		} else {
+			naziv = "?s" + "?p" + "\"" + upit.getNaziv() + "\"" + ".";
 		}
 
 		String predlagac;
 		if (upit.getPredlagac().isEmpty()) {
-			predlagac = "" ;
-		}else {
-			predlagac =  "?s"
-					+ "?p"
-					+ "\"" + upit.getPredlagac() + "\""
-					+".";
+			predlagac = "";
+		} else {
+			predlagac = "?s" + "?p" + "\"" + upit.getPredlagac() + "\"" + ".";
 		}
-
 
 		String status;
 		if (upit.getStatus().isEmpty()) {
-			status = "" ;
-		}else {
-			status =  "?s"
-					+ "?p"
-					+ "\"" + upit.getStatus() + "\""
-					+".";
+			status = "";
+		} else {
+			status = "?s" + "?p" + "\"" + upit.getStatus() + "\"" + ".";
 		}
 
-//		String datumUsvajnja;
-//		if (upit.getDatumUsvajanja()==null) {
-//			datumUsvajnja = "" ;
-//		}else {
-//			datumUsvajnja =  "?s"
-//					+ "?p"
-//					+ "\"" + upit.getDatumUsvajanja().toString() + "\""
-//					+".";
-//		}
-//
-//		String datumPredloga;
-//		if (upit.getDatumPredlogaDo()()==null) {
-//			datumPredloga = "" ;
-//		}else {
-//			datumPredloga =  "?s"
-//					+ "?p"
-//					+ "\""+upit.getDatumPredloga().toString()+ "\""
-//					+".";
-//		}
+		// String datumUsvajnja;
+		// if (upit.getDatumUsvajanja()==null) {
+		// datumUsvajnja = "" ;
+		// }else {
+		// datumUsvajnja = "?s"
+		// + "?p"
+		// + "\"" + upit.getDatumUsvajanja().toString() + "\""
+		// +".";
+		// }
+		//
+		// String datumPredloga;
+		// if (upit.getDatumPredlogaDo()()==null) {
+		// datumPredloga = "" ;
+		// }else {
+		// datumPredloga = "?s"
+		// + "?p"
+		// + "\""+upit.getDatumPredloga().toString()+ "\""
+		// +".";
+		// }
 
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
@@ -231,28 +215,28 @@ public class AktService {
 
 		SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
 
-
 		// Initialize DOM results handle
 		DOMHandle domResultsHandle = new DOMHandle();
 
+		// Initialize SPARQL query definition - retrieves all triples from RDF
+		// dataset
+		// SPARQLQueryDefinition query =
+		// sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { "
+		// + id
+		// + naziv
+		// + predlagac
+		// + predlagac
+		// + status
+		//// + datumUsvajnja
+		//// + datumPredloga
+		// + "}");
 
+		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition(
+				"SELECT ?s WHERE { ?s ?p ?o. FILTER regex (?o, \"akt 3\" ). ?s ?p2 ?o2. FILTER regex (?o2, \"PREDLOZEN\" ).  }");
 
-
-		// Initialize SPARQL query definition - retrieves all triples from RDF dataset
-//		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { "
-//				+ id
-//				+ naziv
-//				+ predlagac
-//				+ predlagac
-//				+ status
-////				+ datumUsvajnja
-////				+ datumPredloga
-//				+ "}");
-
-		SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT ?s WHERE { ?s ?p ?o. FILTER regex (?o, \"akt 3\" ). ?s ?p2 ?o2. FILTER regex (?o2, \"PREDLOZEN\" ).  }");
-
-		log.info("aaaaaa" + query );
-		System.out.println("SELECT * WHERE { ?s ?p ?o. FILTER regex (?p, \" http://www.parlament.gov.rs/akt/predicate/naziv \" )  }");
+		log.info("aaaaaa" + query);
+		System.out.println(
+				"SELECT * WHERE { ?s ?p ?o. FILTER regex (?p, \" http://www.parlament.gov.rs/akt/predicate/naziv \" )  }");
 
 		System.out.println("[INFO] Showing all of the triples from RDF dataset in XML format\n");
 		domResultsHandle = sparqlQueryManager.executeSelect(query, domResultsHandle);
@@ -262,25 +246,16 @@ public class AktService {
 		JacksonHandle resultsHandle = new JacksonHandle();
 		resultsHandle.setMimetype(SPARQLMimeTypes.SPARQL_JSON);
 
-
-
-
-    }
-
-
-
-
-
+	}
 
 	private String handleResultsJSON(JacksonHandle resultsHandle) {
 		List<AktMetaData> akti = new ArrayList<AktMetaData>();
 
 		JsonNode tuples = resultsHandle.get().path("results").path("bindings");
-		for ( JsonNode row : tuples ) {
+		for (JsonNode row : tuples) {
 			String subject = row.path("s").path("value").asText();
 			String predicate = row.path("p").path("value").asText();
 			String object = row.path("o").path("value").asText();
-
 
 			String[] sPath = subject.split("akt/");
 			String aktID = sPath[1];
@@ -288,32 +263,28 @@ public class AktService {
 			String[] pPath = predicate.split("predicate/");
 			String pred = pPath[1];
 
+			AktMetaData akt = findAkt(akti, aktID);
 
-			AktMetaData akt = findAkt(akti,aktID);
-
-			if(akt == null){
+			if (akt == null) {
 
 				akt = new AktMetaData();
 				akt.setId(aktID);
 
-				setPredicate(akt,pred,object);
+				setPredicate(akt, pred, object);
 				akti.add(akt);
 
-			}else{
+			} else {
 
-				setPredicate(akt, pred,object);
+				setPredicate(akt, pred, object);
 
 			}
 
-
-
-			if (!subject.equals("")) System.out.println(subject);
+			if (!subject.equals(""))
+				System.out.println(subject);
 			System.out.println("\t" + predicate + " \n\t" + object + "\n");
 		}
 
-
 		return convertToJson(akti);
-
 
 	}
 
@@ -321,14 +292,14 @@ public class AktService {
 
 		String json = "[ ";
 
-		for(AktMetaData a : akti){
+		for (AktMetaData a : akti) {
 
 			json += a.toString();
 			json += ",";
 		}
 
 		StringBuilder sb = new StringBuilder(json);
-		sb.setCharAt(json.length()-1, ' ');
+		sb.setCharAt(json.length() - 1, ' ');
 
 		json = sb.toString();
 
@@ -337,9 +308,6 @@ public class AktService {
 		return json;
 
 	}
-
-
-
 
 	private void setPredicate(AktMetaData akt, String pred, String object) {
 
@@ -357,25 +325,19 @@ public class AktService {
 			akt.setDatumPredlaganja(object);
 			break;
 
-
 		}
 
-
 	}
-
-
-
 
 	private static AktMetaData findAkt(List<AktMetaData> akti, String aktID) {
 
 		AktMetaData akt = null;
 
-		for(AktMetaData a : akti){
+		for (AktMetaData a : akti) {
 
-			if(a.getId().equals(aktID)){
+			if (a.getId().equals(aktID)) {
 
 				return a;
-
 
 			}
 
@@ -384,9 +346,6 @@ public class AktService {
 		return akt;
 
 	}
-
-
-
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -453,53 +412,99 @@ public class AktService {
 		return "ok";
 	}
 
+	@POST
+	@Path("/update")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	//frontend prosledjuje status i ID akta
+	public String updateStatus(String lista) {
+		String[] id = lista.split("\"");
+
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		String metadataPutanja = new String("akt/" + id[3] + "/metadata");
+		String xmlPutanja = new String("/akti/" + id[3] + ".xml");
+
+		// ovaj je za xml fajl
+		// GenericDocumentManager docMgr = client.newDocumentManager();
+
+		// Create a document manager to work with XML files.
+		// ovaj je za metadata
+		GraphManager graphManager = client.newGraphManager();
+		// Set the default media type (RDF/XML)
+		graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
+
+		// create a handle to receive the document content
+
+		// read the document content
+		// create a manager for XML documents
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(xmlPutanja, handle);
+
+		// access the document content
+		Document document = handle.get();
+		
+		NodeList rootName = document.getDocumentElement().getElementsByTagName("Status");
+		Element element = (Element) rootName.item(0);
+
+		element.setTextContent("");
+		element.setTextContent(id[7]);
+
+		DOMHandle handle2 = new DOMHandle(document);
+		docMgr.write(xmlPutanja, handle2);
+
+		log.info("asd" + id[3] + id[7]);
+
+		return "ok";
+	}
 
 	@POST
 	@Path("/delete")
-    @Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String deleteAkt(String id){
+	public String deleteAkt(String id) {
 		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
 		// create the client
-				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
 
-				// create a generic manager for documents
-				GenericDocumentManager docMgr = client.newDocumentManager();
+		// create a generic manager for documents
+		GenericDocumentManager docMgr = client.newDocumentManager();
 
-				String putanja = new String("/akti/" +id + ".xml");
+		String putanja = new String("/akti/" + id + ".xml");
 
-				// delete the documents
-				docMgr.delete(putanja);
+		// delete the documents
+		docMgr.delete(putanja);
 
-
-
-
-				// release the client
-				client.release();
+		// release the client
+		client.release();
 
 		return "ok";
 
 	}
 
-
-	public static void obrisi(String ID){
+	public static void obrisi(String ID) {
 		// uri plus id plus extenzija to je uri za xml fajl koji trba da obrises
 		// create the client
-				DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
 
-				// create a generic manager for documents
-				GenericDocumentManager docMgr = client.newDocumentManager();
+		// create a generic manager for documents
+		GenericDocumentManager docMgr = client.newDocumentManager();
 
-				String putanja = new String("/akti/" + ID + ".xml");
+		String putanja = new String("/akti/" + ID + ".xml");
 
-				// delete the documents
-				docMgr.delete(putanja);
+		// delete the documents
+		docMgr.delete(putanja);
 
-
-
-
-				// release the client
-				client.release();
+		// release the client
+		client.release();
 	}
 
 	@POST
@@ -507,7 +512,7 @@ public class AktService {
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_JSON)
 
-	public String proveri(Upit upit){
+	public String proveri(Upit upit) {
 		log.info(upit.toString());
 
 		return "ok";
@@ -537,9 +542,6 @@ public class AktService {
 
 		akt = createXMLString(akt1);
 
-
-
-
 		String signedXml = null;
 		SignDocument sd = new SignDocument(akt, gr.getEmail(), gr.getEmail());
 
@@ -558,12 +560,10 @@ public class AktService {
 
 		InputStream stream = new ByteArrayInputStream(signedXml.getBytes(StandardCharsets.UTF_8));
 
-
-
-	    insertDocument("/akti/"+akt1.getId() + ".xml", stream);
+		insertDocument("/akti/" + akt1.getId() + ".xml", stream);
 
 		@SuppressWarnings("unused")
-		String xmlRDFData = addRDFDataToXML(signedXml,akt1.getId());
+		String xmlRDFData = addRDFDataToXML(signedXml, akt1.getId());
 
 		insertMetadata(xmlRDFData, akt1.getId());
 
@@ -573,21 +573,20 @@ public class AktService {
 
 	public XMLGregorianCalendar getXMLGregorianCalendarNow()
 
-    {
+	{
 
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 
-        DatatypeFactory datatypeFactory = null;
+		DatatypeFactory datatypeFactory = null;
 		try {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        XMLGregorianCalendar now =
-            datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-        return now;
-    }
+		XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+		return now;
+	}
 
 	private void insertMetadata(String xmlRDFData, String aktID) {
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
@@ -633,7 +632,6 @@ public class AktService {
 		System.out.println("[INFO] Overwriting triples to a named graph \"" + "akt/" + aktID + "/metadata" + "\".");
 		graphManager.write("akt/" + aktID + "/metadata", rdfFileHandle);
 
-
 		// Release the client
 		client.release();
 
@@ -641,7 +639,7 @@ public class AktService {
 
 	}
 
-	private String addRDFDataToXML(String akt,String id) {
+	private String addRDFDataToXML(String akt, String id) {
 
 		RDFDataGenerator rdfGen = new RDFDataGenerator(akt);
 		rdfGen.setPredicate("Naziv", RDFDataType.STRING, "naziv");
@@ -653,10 +651,6 @@ public class AktService {
 		return rdfGen.getDocumentAsString();
 
 	}
-
-
-
-
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -1059,18 +1053,15 @@ public class AktService {
 
 	}
 
-
 	@GET
 	@Path("{id}")
-    @Produces(MediaType.TEXT_HTML)
-    public String findById(@PathParam("id") String id) {
-
-
+	@Produces(MediaType.TEXT_HTML)
+	public String findById(@PathParam("id") String id) {
 
 		log.info("ID --->>  " + id);
 
-
-		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
 
 		// create a manager for XML documents
 		XMLDocumentManager docMgr = client.newXMLDocumentManager();
@@ -1079,29 +1070,26 @@ public class AktService {
 		DOMHandle handle = new DOMHandle();
 
 		// read the document content
-		docMgr.read("/akti/"+id+".xml", handle);
+		docMgr.read("/akti/" + id + ".xml", handle);
 
 		// access the document content
 		Document document = handle.get();
 
-
-		TransformerFactory tFactory=TransformerFactory.newInstance();
-
-
+		TransformerFactory tFactory = TransformerFactory.newInstance();
 
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("/resource/xsl/akt_new.xsl");
 
-        Source xslDoc=new StreamSource(is);
-        Source xmlDoc=new DOMSource(document);
+		Source xslDoc = new StreamSource(is);
+		Source xmlDoc = new DOMSource(document);
 
-        String outputFileName= System.getProperty( "catalina.base" ) + "/webapps/xws_client/views/akt-prikaz.html";
+		String outputFileName = System.getProperty("catalina.base") + "/webapps/xws_client/views/akt-prikaz.html";
 
-        OutputStream htmlFile = null;
+		OutputStream htmlFile = null;
 		try {
 			htmlFile = new FileOutputStream(outputFileName);
-			Transformer trasform=tFactory.newTransformer(xslDoc);
+			Transformer trasform = tFactory.newTransformer(xslDoc);
 
-	        trasform.transform(xmlDoc, new StreamResult(htmlFile));
+			trasform.transform(xmlDoc, new StreamResult(htmlFile));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1120,24 +1108,41 @@ public class AktService {
 			e.printStackTrace();
 		}
 
-
 		return "ok";
-    }
-
+	}
 
 	@DELETE
 	@Path("{id}")
-    @Produces(MediaType.TEXT_HTML)
-    public String delete(@PathParam("id") String id) {
+	@Produces(MediaType.TEXT_HTML)
+	public String delete(@PathParam("id") String id) {
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
 
+		String novaPutanja = new String("akt/" + id + "/metadata");
+		// Create a document manager to work with XML files.
+		GraphManager graphManager = client.newGraphManager();
 
+		// Set the default media type (RDF/XML)
+		graphManager.setDefaultMimetype(RDFMimeTypes.RDFXML);
+
+		// delete the documents
+		graphManager.delete(novaPutanja);
+		// create the client
+
+		// create a generic manager for documents
+		GenericDocumentManager docMgr = client.newDocumentManager();
+
+		// delete the documents
+		docMgr.delete("/akti/" + id + ".xml");
+
+		System.out.println("Deleted four example docs.");
+
+		// release the client
+		client.release();
 
 		log.info("Deleted --->>  " + id);
 
-
-
-
 		return "ok";
-    }
+	}
 
 }
