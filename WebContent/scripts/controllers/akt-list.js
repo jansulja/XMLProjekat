@@ -199,6 +199,7 @@ $scope.exportPDF = function(akt){
 		return $scope.names;
 	}
 	$scope.izmeniAkt = function (akt){
+		alert("Uspesno ste izmenili status Akta!");
 		var deferred = $q.defer();
 		var zaPoslati = {id: akt.id , status: akt.status};
 
@@ -209,6 +210,7 @@ $scope.exportPDF = function(akt){
 					headers: { "Content-Type": 'application/json' }
 				}).success(function (data) {
 					deferred.resolve(data);
+
 				});
 
 				var promise = deferred.promise;

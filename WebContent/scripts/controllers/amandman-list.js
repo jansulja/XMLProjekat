@@ -52,7 +52,7 @@ angular.module('amandman-list',[])
 	}
 
 $scope.izmeniAmandman = function (amandman){
-
+	alert("Uspesno ste izmenili status Amandmana!");
 		var deferred = $q.defer();
 		var zaPoslati = {id: amandman.id , status: amandman.status};
 
@@ -75,7 +75,7 @@ $scope.izmeniAmandman = function (amandman){
 
 	$scope.kojiNiz = function (akt){
 		if(akt.status ==="PREDLOZEN"){
-			$scope.names = ["PREDLOZEN","USVOJEN_U_NACELU", "ODBIJEN"];
+			$scope.names = ["PREDLOZEN","USVOJEN", "ODBIJEN"];
 		}
 		if(akt.status === "USVOJEN_U_NACELU"){
 					$scope.names = ["USVOJEN_U_NACELU","USVOJEN_U_POJEDINOSTIMA", "ODBIJEN"];
@@ -93,7 +93,7 @@ $scope.izmeniAmandman = function (amandman){
 		}
 
 		if(akt.status ==="USVOJEN"){
-			$scope.names = ["USVOJEN_U_CELINI"]
+			$scope.names = ["USVOJEN"]
 		}
 
 		return $scope.names;
