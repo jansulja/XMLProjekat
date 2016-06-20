@@ -16,15 +16,15 @@ import session.OdbornikDaoLocal;
 
 public class ContextClass implements ServletContextListener {
 
-	
-	
-	
+
+
+
 	@EJB
 	private GradjaninDaoLocal gradjaninDao;
-	
+
 	@EJB
 	private OdbornikDaoLocal odbornikDao;
-	
+
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		// TODO Auto-generated method stub
@@ -35,7 +35,7 @@ public class ContextClass implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent arg0) {
 
 		Gradjanin gAdmin = new Gradjanin();
-		
+
 		gAdmin.setIme("Gradjanin1");
 		gAdmin.setBrojlicne(0123456);
 		gAdmin.setBrojTelefona(063321546);
@@ -47,8 +47,8 @@ public class ContextClass implements ServletContextListener {
 		gAdmin.setOpstinaRodjenja("Novi Sad");
 		gAdmin.setPol("M");
 		gAdmin.setPrezime("Adminovic");
-		
-		
+
+
 		Odbornik o1 = new Odbornik();
 		o1.setBrojlicne(11);
 		o1.setBrojTelefona(11);
@@ -65,11 +65,28 @@ public class ContextClass implements ServletContextListener {
 		o1.setPrezime("Zikic");
 		o1.setStranka("UJEBp");
 		o1.setZvanje("Dipl. Ing. Pilicarstva");
-		
-		
+
+		Odbornik o2 = new Odbornik();
+		o2.setBrojlicne(12);
+		o2.setBrojTelefona(12);
+		o2.setDatumrodjenja(new Date());
+		o2.setDrzava("Srbija");
+		o2.setEmail("o2@o2.com");
+		o2.setIme("Pera");
+		o2.setJMBG(11);
+		o2.setMestoRodjenja("Novi Sad");
+		o2.setOdbornickaGrupa("NSS");
+		o2.setOpstinaRodjenja("Novi Sad");
+		o2.setPlata(900.00);
+		o2.setPol("M");
+		o2.setPrezime("Peric");
+		o2.setStranka("Stranka 2");
+		o2.setZvanje("Zvanje 1");
+
 		try {
 			gAdmin.setPassword(getPasswordHash("g1"));
 			o1.setPassword(getPasswordHash("o1"));
+			o2.setPassword(getPasswordHash("o2"));
 		} catch (NoSuchAlgorithmException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -77,7 +94,7 @@ public class ContextClass implements ServletContextListener {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 //		try {
 //
 //			odbornikDao.persist(o1);
@@ -85,8 +102,16 @@ public class ContextClass implements ServletContextListener {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
-//		
+
+//		try {
+//
+//			odbornikDao.persist(o2);
+//		} catch (NoSuchFieldException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+//
 //		try {
 //
 //			gradjaninDao.persist(gAdmin);
@@ -94,11 +119,11 @@ public class ContextClass implements ServletContextListener {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
-		
+
+
 
 	}
-	
+
 	public static String getPasswordHash(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(password.getBytes("UTF-8"));
@@ -108,7 +133,7 @@ public class ContextClass implements ServletContextListener {
 			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
-		
+
 	}
 
 }

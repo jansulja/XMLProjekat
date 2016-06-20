@@ -1,0 +1,162 @@
+<div>
+
+
+	<div class="panel-group">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<button type="button" class="btn btn-default" data-toggle="collapse" href="#collapse1"
+						aria-label="Left Align">
+						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga</span>
+					</button>
+					
+					
+					<button type="button" class="btn btn-default" ng-click="predloziAkt()">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Predlo&#382;i akt
+					</button>
+			
+				</h4>
+			</div>
+			<div  id="collapse1" class="panel-collapse collapse">
+				<div class="panel-body">
+
+
+					<div>
+						<form>
+							<div class="form-group">
+								Naziv:<br> <input type="text" ng-model="Upit.Naziv"><br>
+							</div>
+							<div class="form-group">
+								ID:<br> <input type="text" ng-model="Upit.ID"><br>
+							</div>
+							<div class="form-group">
+								Status:<br> <select ng-model="Upit.Status"
+									ng-options="x for x in names"></select><br>
+								Datum_predloga: <br>
+							</div>
+							<div class="form-group">
+								od:<br>
+								<div class="input-group">
+									<input type="text" class="form-control"
+										datepicker-popup="dd.MM.yyyy." ng-model="Upit.DatumPredlogaOd"
+										is-open="dateOpened1" close-text="Close" /> <span
+										class="input-group-btn">
+										<button type="button" class="btn btn-default"
+											ng-click="openDatepicker1($event, 'dateOpened1')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+								<br>
+							</div>
+							<div class="form-group">
+								do:<br>
+								<div class="input-group">
+									<input type="text" class="form-control"
+										datepicker-popup="dd.MM.yyyy." ng-model="Upit.DatumPredlogaDo"
+										is-open="dateOpened2" close-text="Close" /> <span
+										class="input-group-btn">
+										<button type="button" class="btn btn-default"
+											ng-click="openDatepicker2($event, 'dateOpened2')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+								<br>
+							</div>
+							<div class="form-group">
+								Datum_usvajanja:<br>
+								<div class="input-group">
+									<input type="text" class="form-control"
+										datepicker-popup="dd.MM.yyyy." ng-model="Upit.DatumUsvajanja"
+										is-open="dateOpened3" close-text="Close" /> <span
+										class="input-group-btn">
+										<button type="button" class="btn btn-default"
+											ng-click="openDatepicker3($event, 'dateOpened3')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+								<br>
+							</div>
+							<div class="form-group">
+								Predlozio:<br> <input type="text" ng-model="Upit.Predlagac">
+							</div>
+
+							<div class="form-group">
+								Tekst u aktu:<br> <input type="text" ng-model="Upit.Text">
+							</div>
+					</div>
+					</form>
+					<div>
+						<button type="button" class="btn btn-default btn-lg"
+							ng-click="searchAktove()">
+							<span class="glyphicon glyphicon-submit" aria-hidden="true"></span>
+							Pretrazi aktove
+						</button>
+
+					</div>
+
+
+				</div>
+				<div class="panel-footer"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	<br>
+	<div>
+		<table
+			class="table table-striped table-bordered table-condensed table-hover">
+			<tr>
+				<th>Naziv</th>
+				<th>Id</th>
+				<th>Datum predlaganja</th>
+				<th>Odbornik</th>
+				<th>Status</th>
+				<th>Opcija</th>
+
+			</tr>
+			<tr ng-repeat="akt in akts track by $index " ng-click="show(akt,$event)">
+				<td>{{akt.naziv}}</td>
+				<td>{{akt.id}}</td>
+				<td>{{akt.datumPredlaganja}}</td>
+				<td>{{akt.odbornik}}</td>
+				<td>{{akt.status}}</td>
+
+				<td>
+					<button type="button" class="btn btn-default btn-md"
+						ng-click="delete(akt)">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						Obrisi
+					</button>
+
+					<button type="button" class="btn btn-default btn-md"
+						ng-click="predloziAmandman(akt)">
+						<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+						Predlog Amandmana
+					</button>
+
+					<button type="button" class="btn btn-default btn-md"
+						ng-click="pregledAmandmana(akt)">
+						<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+						Pregled Amandmana
+					</button>
+
+				</td>
+				
+				
+				
+			</tr>
+		</table>
+
+	</div>
+
+
+</div>
+

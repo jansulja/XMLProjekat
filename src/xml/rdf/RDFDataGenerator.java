@@ -74,14 +74,30 @@ public class RDFDataGenerator {
 	public void setSubject(String id){
 		//root.setAttribute("xlmns", "http://www.parlament.gov.rs/akt");
 		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
+
 		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:pred", "http://www.parlament.gov.rs/akt/predicate/");
-		//root.setAttribute("xlmns:xs", "http://www.w3.org/2001/XMLSchema#");
+		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsbs", "http://www.w3.org/2001/XMLSchema#");
 		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
 		root.setAttribute("about", "http://www.parlament.gov.rs/akt/" + id);
 
 		printDocument();
 
 	}
+
+
+	public void setAmandmanSubject(String id){
+		//root.setAttribute("xlmns", "http://www.parlament.gov.rs/akt");
+		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
+
+		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:pred", "http://www.parlament.gov.rs/amandman/predicate/");
+		root.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsbs", "http://www.w3.org/2001/XMLSchema#");
+		//root.setAttribute("xlmns:pred", "http://www.parlament.gov.rs/akt/predicate/");
+		root.setAttribute("about", "http://www.parlament.gov.rs/amandman/" + id);
+
+		printDocument();
+
+	}
+
 
 	public void setPredicate(String elementTagName, RDFDataType datatype, String predicateName){
 
@@ -93,17 +109,20 @@ public class RDFDataGenerator {
 
 	}
 
-	private String getDataType(RDFDataType datatype) {
+	public String getDataType(RDFDataType datatype) {
 
 		String type = null;
 
 		switch (datatype) {
 		case STRING:
-			type = "xs:string";
+			type = "xsbs:string";
 			break;
 
 		case DATE:
-			type = "xs:date";
+
+			type = "xsbs:date";
+
+
 			break;
 		}
 

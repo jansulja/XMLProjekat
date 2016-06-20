@@ -12,5 +12,7 @@ public interface OdbornikDaoLocal extends GenericDao<Odbornik, Integer> {
 	public Odbornik login(String username, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException;
 
 	public void logout();
-	
+
+	public boolean chechCred(String username, String password);
+
 }

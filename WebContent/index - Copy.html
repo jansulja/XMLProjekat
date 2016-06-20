@@ -1,0 +1,190 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+   
+   
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+		<!-- test filip -->
+       <!-- endbuild -->
+       
+       <!-- test jan -->
+       <!-- skgjklsgj -->
+    <!-- endbuild -->
+  </head>
+  <body ng-app="invoiceClientApp" ng-controller="appCtrl">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right"  >
+          <li class="active"><a ng-click="about()">About</a></li>
+          <li class="active"><a ng-href="#/gradjanin-list">Gradjani</a></li>
+          <li class="active"><a ng-href="#/">Pravni Akti</a></li>
+          <li class="active"><a ng-href="#/">Odbornici</a></li>
+          <li class="active"><a ng-href="#/">Profil</a></li>
+          <li  ng-if="!isLoginPage()" ><a ng-href="#/">Home</a></li>
+          <li><a ng-if="!isLoginPage()" ng-click="logout()">Logout</a></li>
+          <li ng-if="!isLoginPage()"><a ng-href="#/">{{current}}</a></li>
+        </ul>
+        <h3 class="text-muted">Skupština Grada Novog Sada</h3>
+      </div>
+
+      <div>
+<div>
+
+  <form  novalidate="novalidate" ng-submit="save()">
+    
+    <div class="form-group">
+    <label>Akt:</label><br>
+      <label >Naziv akta:</label>
+      <input  class="form-control" ng-model="Akt.naziv" required required-err-type="requiredMy"/>
+    </div>
+   
+    <div class="form-group">
+    <label>Uvodni Deo:</label><br>
+      <label>Predmet uredjivanja:</label>
+      <input class="form-control" ng-model="Uvodni_deo.Predmet_uredjivanja"></input>
+      <label>Definicija:</label>
+      <input class="form-control" ng-model="Uvodni_deo.Definicija"></input>
+    </div>
+    
+    <div class="form-group">
+      <label>Glavni deo:</label> <br>
+      <label>Prava i obaveze:</label>
+      <input class="form-control" ng-model="Glavni_deo.Prava_i_obaveze"></input>
+    </div>
+    
+     <div class="form-group">
+     <label>Ovlascenje:</label>
+     <input class="form-control" ng-model="Ovlascenje.OvlasceniOrgan"></input>
+     <label>Obim:</label>
+     <input class="form-control" ng-model="Ovlascenje.Obim"></input>
+     <label>Period vazenja:</label>
+     <input class="form-control" ng-model="Ovlascenje.Period_vazenja"></input>
+     </div>
+
+
+      <div class="form-group">
+      <label>Kazena odredba:</label><br>
+      <label>Norma:</label>
+      <input class="form-control" ng-model="Kaznena_odredba.Norma"></input>
+      <label>Kaznjiva radnja i sankcija:</label><br>
+      <label>Kaznjiva radnja:</label>
+      <input class="form-control" ng-model="Kaznjiva_radnja_i_sankcija.Kaznjiva_radnja"></input>
+      <label>Sankcija:</label>
+      <input class="form-control" ng-model="Kaznjiva_radnja_i_sankcija.Sankcija"></input>
+      </div>
+   
+
+
+      <div class="form-group">
+      <label>Zavrsni deo:</label><br>
+      <label>Prelazne odredbe:</label>
+      <input class="form-control" ng-model="Zavrsni_deo.Prelazne_odredbe"></input>
+      <label>Zavrsne odredbe:</label>
+      <input class="form-control" ng-model="Zavrsni_deo.Zavrsne_odredbe"></input>
+      <label>Datum</label>
+      <div class="input-group">
+        <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="Zavrsni_deo.Datum" is-open="dateOpened" close-text="Close" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'dateOpened')"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>
+      <label>Broj propisa</label>
+      <input class="form-control" ng-model="Zavrsni_deo.Broj_propisa"></input>
+      </div>
+    
+    
+    
+    <div>
+        <button class="btn" type="submit">Sačuvaj</button>
+        <button class="btn" ng-click="delete()">Obriši</button>
+    </div>
+    
+    </form>
+  
+  
+  
+</div>
+
+
+
+      <div class="footer">
+        <p><span class="glyphicon glyphicon-copyright-mark"></span> Tim22 2016</p>
+        <p></p>
+      </div>
+    </div>
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+ 
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-md5/angular-md5.js"></script>
+	<script src="bower_components/angular-auto-validate/dist/jcs-auto-validate.min.js"></script>
+	
+
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/controllers/invoices.js"></script>
+    <script src="scripts/controllers/invoice.js"></script>
+    <script src="scripts/controllers/invoiceItem.js"></script>
+    <script src="scripts/controllers/user.js"></script>
+    <script src="scripts/controllers/gradjani.js"></script>
+    <script src="scripts/controllers/gradjanin.js"></script>
+    <script src="scripts/factories/invoiceFactory.js"></script>
+    <script src="scripts/factories/invoiceItemFactory.js"></script>
+    <script src="scripts/factories/userFactory.js"></script>
+    <script src="scripts/factories/gradjaninFactory.js"></script>
+    <script src="scripts/factories/currentUserFactory.js"></script>
+    <!-- endbuild -->
+
+
+</body>
+</html>

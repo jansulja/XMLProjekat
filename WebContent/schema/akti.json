@@ -1,0 +1,528 @@
+{
+   "schema":true,
+   "ns":4,
+   "namespaces":[
+      {
+         "prefix":"xml",
+         "uri":"http://www.w3.org/XML/1998/namespace"
+      },
+      {
+         "prefix":"xmlns",
+         "uri":"http://www.w3.org/2000/xmlns/"
+      },
+      {
+         "prefix":"html",
+         "uri":"http://www.w3.org/1999/xhtml/"
+      },
+      {
+         "prefix":"xs",
+         "uri":"http://www.w3.org/2001/XMLSchema"
+      },
+      {
+         "prefix":"akt",
+         "uri": null
+      }
+   ],
+   "elements":[
+      {
+         "values":[
+
+         ],
+         "type":null,
+         "ns":4,
+         "name":"Akt",
+         "element":true,
+         "attributes":[
+            {
+               "values":[
+                  "USVOJEN",
+                  "ODBIJEN",
+                  "PREDLOZEN",
+                  "U_PROCESU"
+               ],
+               "type":"string",
+               "ns":4,
+               "name":"status",
+               "attribute":true,
+               "attributes":[
+
+               ],
+               "elements":[
+
+               ]
+            }
+         ],
+         "elements":[
+            {
+               "values":[
+
+               ],
+               "type":null,
+               "ns":4,
+               "name":"Deo",
+               "element":true,
+               "attributes":[
+                  {
+                     "values":[
+
+                     ],
+                     "type":"string",
+                     "ns":4,
+                     "name":"redni_broj",
+                     "attribute":true
+                  }
+               ],
+               "elements":[
+                  {
+                     "values":[
+
+                     ],
+                     "type":"string",
+                     "ns":4,
+                     "name":"Naziv",
+                     "element":true,
+                     "attributes":[
+
+                     ],
+                     "elements":[
+
+                     ]
+                  },
+                  {
+                     "values":[
+
+                     ],
+                     "type":null,
+                     "ns":4,
+                     "name":"Glava",
+                     "element":true,
+                     "attributes":[
+                        {
+                           "values":[
+
+                           ],
+                           "type":"string",
+                           "ns":4,
+                           "name":"redni_broj",
+                           "attribute":true
+                        }
+                     ],
+                     "elements":[
+                        {
+                           "values":[
+
+                           ],
+                           "type":"string",
+                           "ns":4,
+                           "name":"Naziv",
+                           "element":true,
+                           "attributes":[
+
+                           ],
+                           "elements":[
+
+                           ]
+                        },
+                        {
+                           "values":[
+
+                           ],
+                           "type":null,
+                           "ns":4,
+                           "name":"Odeljak",
+                           "element":true,
+                           "attributes":[
+
+                           ],
+                           "elements":[
+                              {
+                                 "values":[
+
+                                 ],
+                                 "type":"string",
+                                 "ns":4,
+                                 "name":"Naziv",
+                                 "element":true,
+                                 "attributes":[
+
+                                 ],
+                                 "elements":[
+
+                                 ]
+                              },
+                              {
+                                 "values":[
+
+                                 ],
+                                 "type":null,
+                                 "ns":4,
+                                 "name":"Pododeljak",
+                                 "element":true,
+                                 "attributes":[
+
+                                 ],
+                                 "elements":[
+                                    {
+                                       "values":[
+
+                                       ],
+                                       "type":"string",
+                                       "ns":4,
+                                       "name":"Naziv",
+                                       "element":true,
+                                       "attributes":[
+
+                                       ],
+                                       "elements":[
+
+                                       ]
+                                    },
+                                    {
+                                       "values":[
+
+                                       ],
+                                       "type":null,
+                                       "ns":4,
+                                       "name":"Clan",
+                                       "element":true,
+                                       "attributes":[
+                                          {
+                                             "values":[
+
+                                             ],
+                                             "type":"positiveInteger",
+                                             "ns":4,
+                                             "name":"redni_broj",
+                                             "attribute":true
+                                          }
+                                       ],
+                                       "elements":[
+                                          {
+                                             "values":[
+
+                                             ],
+                                             "type":"string",
+                                             "ns":4,
+                                             "name":"Naziv",
+                                             "element":true,
+                                             "attributes":[
+
+                                             ],
+                                             "elements":[
+
+                                             ]
+                                          },
+                                          {
+                                             "values":[
+
+                                             ],
+                                             "type":null,
+                                             "ns":4,
+                                             "name":"Stav",
+                                             "element":true,
+                                             "attributes":[
+
+                                             ],
+                                             "elements":[
+                                                {
+                                                   "values":[
+
+                                                   ],
+                                                   "type":"string",
+                                                   "ns":4,
+                                                   "name":"Tekst",
+                                                   "element":true,
+                                                   "attributes":[
+
+                                                   ],
+                                                   "elements":[
+
+                                                   ]
+                                                },
+                                                {
+                                                   "values":[
+
+                                                   ],
+                                                   "type":null,
+                                                   "ns":4,
+                                                   "name":"Tacka",
+                                                   "element":true,
+                                                   "attributes":[
+                                                      {
+                                                         "values":[
+
+                                                         ],
+                                                         "type":"positiveInteger",
+                                                         "ns":4,
+                                                         "name":"redni_broj",
+                                                         "attribute":true
+                                                      }
+                                                   ],
+                                                   "elements":[
+                                                      {
+                                                         "values":[
+
+                                                         ],
+                                                         "type":"string",
+                                                         "ns":4,
+                                                         "name":"Tekst",
+                                                         "element":true,
+                                                         "attributes":[
+
+                                                         ],
+                                                         "elements":[
+
+                                                         ]
+                                                      },
+                                                      {
+                                                         "values":[
+
+                                                         ],
+                                                         "type":null,
+                                                         "ns":4,
+                                                         "name":"Podtacka",
+                                                         "element":true,
+                                                         "attributes":[
+                                                            {
+                                                               "values":[
+
+                                                               ],
+                                                               "type":"positiveInteger",
+                                                               "ns":4,
+                                                               "name":"redni_broj",
+                                                               "attribute":true
+                                                            }
+                                                         ],
+                                                         "elements":[
+                                                            {
+                                                               "values":[
+
+                                                               ],
+                                                               "type":"string",
+                                                               "ns":4,
+                                                               "name":"Tekst",
+                                                               "element":true,
+                                                               "attributes":[
+
+                                                               ],
+                                                               "elements":[
+
+                                                               ]
+                                                            },
+                                                            {
+                                                               "values":[
+
+                                                               ],
+                                                               "type":"string",
+                                                               "ns":4,
+                                                               "name":"Alineja",
+                                                               "element":true,
+                                                               "attributes":[
+
+                                                               ],
+                                                               "elements":[
+
+                                                               ]
+                                                            }
+                                                         ],
+                                                         "occurs":{
+                                                            "4:Alineja":{
+                                                               "min":"0",
+                                                               "max":"unbounded"
+                                                            }
+                                                         }
+                                                      }
+                                                   ],
+                                                   "occurs":{
+                                                      "4:Podtacka":{
+                                                         "min":"0",
+                                                         "max":"unbounded"
+                                                      }
+                                                   }
+                                                }
+                                             ],
+                                             "occurs":{
+                                                "4:Tacka":{
+                                                   "min":"0",
+                                                   "max":"unbounded"
+                                                }
+                                             }
+                                          }
+                                       ],
+                                       "occurs":{
+                                          "4:Naziv":{
+                                             "min":"0",
+                                             "max":null
+                                          },
+                                          "4:Stav":{
+                                             "min":null,
+                                             "max":"unbounded"
+                                          }
+                                       }
+                                    }
+                                 ],
+                                 "occurs":{
+                                    "4:Clan":{
+                                       "min":"1",
+                                       "max":"unbounded"
+                                    }
+                                 }
+                              },
+                              {
+                                 "values":[
+
+                                 ],
+                                 "type":null,
+                                 "ns":4,
+                                 "name":"Clan",
+                                 "element":true,
+                                 "attributes":[
+                                    {
+                                       "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"attributes\"][0]"
+                                    }
+                                 ],
+                                 "elements":[
+                                    {
+                                       "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][0]"
+                                    },
+                                    {
+                                       "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1]"
+                                    }
+                                 ],
+                                 "occurs":{
+                                    "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"occurs\"]"
+                                 }
+                              }
+                           ],
+                           "occurs":{
+                              "4:Pododeljak":{
+                                 "min":"2",
+                                 "max":"unbounded"
+                              },
+                              "4:Clan":{
+                                 "min":"1",
+                                 "max":"unbounded"
+                              }
+                           },
+                           "choices":[
+                              {
+                                 "elements":[
+
+                                 ],
+                                 "minOccurs":null,
+                                 "maxOccurs":1
+                              }
+                           ]
+                        },
+                        {
+                           "values":[
+
+                           ],
+                           "type":null,
+                           "ns":4,
+                           "name":"Clan",
+                           "element":true,
+                           "attributes":[
+                              {
+                                 "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"attributes\"][0]"
+                              }
+                           ],
+                           "elements":[
+                              {
+                                 "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][0]"
+                              },
+                              {
+                                 "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1]"
+                              }
+                           ],
+                           "occurs":{
+                              "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"elements\"][1][\"occurs\"]"
+                           }
+                        }
+                     ],
+                     "occurs":{
+                        "4:Odeljak":{
+                           "min":"2",
+                           "max":"unbounded"
+                        },
+                        "4:Clan":{
+                           "min":null,
+                           "max":"unbounded"
+                        }
+                     },
+                     "choices":[
+                        {
+                           "elements":[
+
+                           ],
+                           "minOccurs":null,
+                           "maxOccurs":1
+                        }
+                     ]
+                  }
+               ],
+               "occurs":{
+                  "4:Naziv":{
+                     "min":"0",
+                     "max":null
+                  },
+                  "4:Glava":{
+                     "min":"2",
+                     "max":"unbounded"
+                  }
+               }
+            },
+            {
+               "values":[
+
+               ],
+               "type":null,
+               "ns":4,
+               "name":"Glava",
+               "element":true,
+               "attributes":[
+                  {
+                     "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"attributes\"][0]"
+                  }
+               ],
+               "elements":[
+                  {
+                     "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][0]"
+                  },
+                  {
+                     "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][1]"
+                  },
+                  {
+                     "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"elements\"][2]"
+                  }
+               ],
+               "occurs":{
+                  "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"occurs\"]"
+               },
+               "choices":{
+                  "$ref":"$[\"elements\"][0][\"elements\"][0][\"elements\"][1][\"choices\"]"
+               }
+            }
+         ],
+         "occurs":{
+            "4:Deo":{
+               "min":"2",
+               "max":"unbounded"
+            },
+            "4:Glava":{
+               "min":"2",
+               "max":"unbounded"
+            }
+         },
+         "choices":[
+            {
+               "elements":[
+
+               ],
+               "minOccurs":null,
+               "maxOccurs":1
+            }
+         ]
+      }
+   ]
+}

@@ -25,13 +25,13 @@ public class OdbornikDaoBean extends GenericDaoBean<Odbornik, Integer> implement
 	private HttpServletRequest request;
 
 	private static Logger log = Logger.getLogger(OdbornikDaoBean.class);
-	
+
 	@Override
 	public Odbornik login(String username, String password)
 			throws UnsupportedEncodingException, NoSuchAlgorithmException {
-		
+
 		password = ContextClass.getPasswordHash(password);
-		
+
 		Query q = em.createQuery(
 				"select distinct u from " + "Odbornik u where u.email = :username " + "and u.password = :password");
 		q.setParameter("username", username);
@@ -50,9 +50,26 @@ public class OdbornikDaoBean extends GenericDaoBean<Odbornik, Integer> implement
 	@Override
 	public void logout() {
 		request.getSession().invalidate();
-		
+
+
 	}
 
-	
+	@Override
+	public boolean chechCred(String username, String password) {
+		//password = ContextClass.getPasswordHash(password);
+		Query q = em.createQuery(
+				"select distinct u from " + "Odbornik u where u.email = :username " + "and u.password = :password");
+		q.setParameter("username", username);
+		q.setParameter("password", password);
+		@SuppressWarnings("unchecked")
+		List<Odbornik> users = q.getResultList();
+		if (users.size() == 1) {
+			return true;
+		} else
+		return false;
+	}
+
+
+
 
 }
