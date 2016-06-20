@@ -5,6 +5,7 @@ angular.module('gradjanin', [
 	'ui.bootstrap'])
 
 .controller('gradjaninCtrl', function (Gradjanin,$rootScope, $scope, $routeParams, $log, $location, $q, $http) {
+	$scope.pogresan = false;
 
 	if($routeParams.gradjaninId!='new'){
 		var gradjaninId = $routeParams.gradjaninId;
@@ -85,9 +86,12 @@ angular.module('gradjanin', [
 			url: "https://localhost:8443/xws/api/gradjanin/login",
 			method: "POST",
 			data: $scope.gradjanin
-		}).success(function (data) {
-			deferred.resolve(data);
-		});
+		}).then(function successCallback(data) {
+			deferred.resolve(data.data);
+		}, function errorCallback(response) {
+			$scope.pogresan = true;
+			}
+			);
 
 		var promise = deferred.promise;
 
@@ -103,6 +107,8 @@ angular.module('gradjanin', [
 			if(data.role === 'G'){
 				$location.path('akt-list');
 			}else if(data.role === 'O'){
+				$location.path('akt-list');
+			}else if(data.role ==='P'){
 				$location.path('akt-list');
 			}
 

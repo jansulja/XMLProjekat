@@ -8,6 +8,7 @@
 			<label>password:</label>
 			<input type="password" class="form-control" ng-model="gradjanin.password"></input>
 		</div>
+		<div ng-show="pogresan" class="alert alert-danger" role="alert">Pogresan username ili password</div>
 		<div class="form-group">
 			<button class="btn btn-default" ng-click="login()">login</button>
 		</div>

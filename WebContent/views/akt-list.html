@@ -10,11 +10,11 @@
 						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga</span>
 					</button>
 					
-					
+					<div ng-show="dalJeOdbornik()">
 					<button type="button" class="btn btn-default" ng-click="predloziAkt()">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Predlo&#382;i akt
 					</button>
-			
+					</div>
 				</h4>
 			</div>
 			<div  id="collapse1" class="panel-collapse collapse">
@@ -127,14 +127,23 @@
 				<td>{{akt.id}}</td>
 				<td>{{akt.datumPredlaganja}}</td>
 				<td>{{akt.odbornik}}</td>
-				<td>{{akt.status}}</td>
+				<td><div ng-show="dalJePredsednik()">{{akt.status}}</div>
 
-				<td>
+				<div ng-hide="dalJePredsednik()">	<select ng-model="akt.status" ng-init="akt.status" 
+									ng-options="x for x in kojiNiz(akt)"></select>
+							<button type="button" class="btn btn-default btn-md"
+						ng-click="izmeniAkt(akt)">
+						<span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span>
+						Sacuvaj izmene
+					</button></div>
+				</td>
+
+				<td><div ng-hide="dalJePredsednik()">
 					<button type="button" class="btn btn-default btn-md"
 						ng-click="delete(akt)">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 						Obrisi
-					</button>
+					</button></div>
 
 					<button type="button" class="btn btn-default btn-md"
 						ng-click="predloziAmandman(akt)">

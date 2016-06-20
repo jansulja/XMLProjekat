@@ -1,21 +1,12 @@
 package services;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -26,19 +17,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 
 import model.Gradjanin;
-import rs.ac.uns.ftn.xws.entities.payments.Invoice;
-import rs.ac.uns.ftn.xws.entities.users.User;
+import model.Predsednik;
 import rs.ac.uns.ftn.xws.util.Authenticate;
 import rs.ac.uns.ftn.xws.util.ServiceException;
 import session.GradjaninDaoLocal;
 import session.OdbornikDaoLocal;
-import util.AuthenticateOdbornik;
+import session.PredsednikDaoLocal;
 
 @Path("/gradjanin")
 public class GradjaninService {
@@ -67,6 +56,9 @@ public class GradjaninService {
 
 	@EJB
 	OdbornikDaoLocal odbornikDao;
+	
+	@EJB 
+	PredsednikDaoLocal predsednikDao;
 
 	@GET
     @Path("current")
@@ -82,9 +74,22 @@ public class GradjaninService {
     @Produces(MediaType.APPLICATION_JSON)
     public Object loginGet(@QueryParam("username") String username, @QueryParam("password") String password) {
     	Gradjanin user = null;
+  
 		try {
+			
 			user = odbornikDao.login(username, password);
 
+			if(user == null){
+
+				user = gradjaninDao.login(username, password);
+			}
+        } catch (Exception e) {
+        	log.error(e.getMessage(), e);
+        }
+    	
+		try {
+			
+			user = predsednikDao.login(username, password);
 			if(user == null){
 
 				user = gradjaninDao.login(username, password);
@@ -106,8 +111,19 @@ public class GradjaninService {
     public Object login(Gradjanin sentUser) {
     	Gradjanin user = null;
 		try {
-				user = odbornikDao.login(sentUser.getEmail(), sentUser.getPassword());
+			user = predsednikDao.login(sentUser.getEmail(), sentUser.getPassword());
+			if(user == null){
 
+				user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
+			}
+
+
+    } catch (Exception e) {
+    	log.error(e.getMessage(), e);
+    }
+    	
+    	try {
+				user = odbornikDao.login(sentUser.getEmail(), sentUser.getPassword());
 				if(user == null){
 
 					user = gradjaninDao.login(sentUser.getEmail(), sentUser.getPassword());
@@ -139,6 +155,8 @@ public class GradjaninService {
 
 	@EJB
 	GradjaninDaoLocal gradjaninDao;
+	
+
 
 	//Neko gadja ovaj servis....
 	@GET
