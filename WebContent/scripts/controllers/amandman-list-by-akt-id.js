@@ -41,7 +41,40 @@ angular.module('amandman-list-by-akt-id',[])
 
 
 		}
+$scope.dalJePredsednik = function(){
+		if($rootScope.current.role === 'P'){
+			return false;
+		}
+		else{
+		return true;
+		}
+	}
 
+		$scope.kojiNiz = function (akt){
+		if(akt.status ==="PREDLOZEN"){
+			$scope.names = ["PREDLOZEN","USVOJEN", "ODBIJEN"];
+		}
+		if(akt.status === "USVOJEN_U_NACELU"){
+					$scope.names = ["USVOJEN_U_NACELU","USVOJEN_U_POJEDINOSTIMA", "ODBIJEN"];
+		}
+		if(akt.status === "USVOJEN_U_POJEDINOSTIMA" ){
+			$scope.names = ["USVOJEN_U_POJEDINOSTIMA","USVOJEN_U_CELINI", "ODBIJEN"];
+		}
+				
+		if(akt.status === "USVOJEN_U_CELINI"){
+			$scope.names = ["USVOJEN_U_CELINI"];
+		}
+
+		if(akt.status === "ODBIJEN"){
+			$scope.names = ["ODBIJEN"];
+		}
+
+		if(akt.status ==="USVOJEN"){
+			$scope.names = ["USVOJEN"]
+		}
+
+		return $scope.names;
+	}
 
 
 });
