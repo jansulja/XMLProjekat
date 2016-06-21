@@ -345,7 +345,7 @@ public class AktService {
 		resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
 		String jsonResult = handleResultsJSON(resultsHandle);
 
-		DOMUtil.transform(domResultsHandle.get(), System.out);
+		//DOMUtil.transform(domResultsHandle.get(), System.out);
 
 
 
@@ -504,8 +504,8 @@ public class AktService {
 		case "odbornik":
 			akt.setOdbornik(object);
 			break;
-		case "datumPredlaganja":
-			akt.setDatumPredlaganja(object);
+		case "datum_predlaganja":
+			akt.setDatumPredlaganja(object.split("\\+")[0]);
 			break;
 
 		}
@@ -768,6 +768,8 @@ public class AktService {
 
 		insertMetadata(xmlRDFData, akt1.getId());
 
+		updateRbClana(akt1.getId());
+
 		return "ok";
 
 	}
@@ -961,7 +963,7 @@ public class AktService {
 		String singString = saveDocument(doc);
 
 
-		return singString;
+		return aString;
 	}
 
 	public static void insertDocument(String path, InputStream in) {
@@ -1618,12 +1620,57 @@ public class AktService {
 		//Node nodeAttr = attr.getNamedItem("Naziv");
 		//nodeAttr.setTextContent("2");
 
+	    client.release();
 
-		client.release();
+
+	    updateRbClana(aktId);
 
 		return "ok";
 
 	}
 
+
+	private void updateRbClana(String aktId) {
+
+		//String aktId = "2016-06-20-827";
+		String pathToAkt = "/akti/"+aktId + ".xml" ;
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(pathToAkt, handle);
+
+		// access the document content
+		Document doc = handle.get();
+
+
+		for (int i=0; i<doc.getElementsByTagName("Clan").getLength(); i++) {
+
+			Element clan = (Element)doc.getElementsByTagName("Clan").item(i);
+			clan.setAttribute("redni_broj", Integer.toString(i+1));
+		}
+
+		InputStream stream = new ByteArrayInputStream(saveDocument(doc).getBytes(StandardCharsets.UTF_8));
+
+
+
+
+		//String xmlRDFData = addRDFDataToXML(signedXml);
+
+		//insertMetadata(xmlRDFData, String.valueOf(aktID));
+
+	    insertDocument("/akti/"+aktId + ".xml", stream);
+		//Node nodeAttr = attr.getNamedItem("Naziv");
+		//nodeAttr.setTextContent("2");
+
+
+		client.release();
+
+	}
 
 }
