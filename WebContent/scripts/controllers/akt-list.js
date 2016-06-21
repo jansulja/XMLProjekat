@@ -108,7 +108,23 @@ $scope.dalJeOdbornik = function (){
 	}
 }
 
+$scope.searchAktovePoTextu = function(){
+			var deferred = $q.defer();
 
+			$http({
+				url: "https://localhost:8443/xws/api/akt/textsearch",
+				method: "POST",
+				data: $scope.Upit.Text
+
+			}).success(function (data) {
+				deferred.resolve(data);
+			});
+
+			var promise = deferred.promise;
+			promise.then(function (data) {
+				$scope.akts = data;
+			});
+}
 
 $scope.isCurrent = function(akt){
 			if(akt.odbornik === $rootScope.current.email) {
