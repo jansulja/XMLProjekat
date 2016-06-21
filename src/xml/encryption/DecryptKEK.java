@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -39,17 +40,17 @@ import org.xml.sax.SAXException;
 //Dekriptuje tajni kljuc privatnim kljucem
 //Tajnim kljucem dekriptuje podatke
 public class DecryptKEK {
-	
+
 	private static final String IN_FILE = "./data/univerzitet_enc2.xml";
 	private static final String OUT_FILE = "./data/univerzitet_dec2.xml";
 	private static final String KEY_STORE_FILE = "C:/Users/Filipo/git/XMLProjekat/data/sgns.jks";
-	
+
     static {
     	//staticka inicijalizacija
         Security.addProvider(new BouncyCastleProvider());
         org.apache.xml.security.Init.init();
     }
-    
+
 	public void testIt(Document doc) {
 
 		//ucitava se privatni kljuc
@@ -70,7 +71,7 @@ public class DecryptKEK {
 		}
 		System.out.println("Decryption done >>>>>>>>>>>>>>>>>>>>>>>>");
 	}
-	
+
 	/**
 	 * Kreira DOM od XML dokumenta
 	 */
@@ -96,9 +97,9 @@ public class DecryptKEK {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Snima DOM u XML fajl 
+	 * Snima DOM u XML fajl
 	 */
 	private void saveDocument(Document doc, String fileName) {
 		try {
@@ -107,10 +108,10 @@ public class DecryptKEK {
 
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();
-			
+
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(f);
-			
+
 			transformer.transform(source, result);
 
 			f.close();
@@ -131,26 +132,27 @@ public class DecryptKEK {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Ucitava privatni kljuc is KS fajla
 	 * alias primer
 	 */
-	private PrivateKey readPrivateKey() {
+	public PrivateKey readPrivateKey() {
 		try {
 			//kreiramo instancu KeyStore
 			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//ucitavamo podatke
-			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream("resource/sgns.jks");
+			BufferedInputStream in = new BufferedInputStream(is);
 			ks.load(in, "sgns".toCharArray());
-			
+
 			if(ks.isKeyEntry("iagns")) {
 				PrivateKey pk = (PrivateKey) ks.getKey("iagns", "iagns".toCharArray());
 				return pk;
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -172,14 +174,14 @@ public class DecryptKEK {
 		} catch (UnrecoverableKeyException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
+
 	/**
 	 * Kriptuje sadrzaj prvog elementa odsek
 	 */
-	private Document decrypt(Document doc, PrivateKey privateKey) {
-		
+	public Document decrypt(Document doc, PrivateKey privateKey) {
+
 		try {
 			//cipher za dekritpovanje XML-a
 			XMLCipher xmlCipher = XMLCipher.getInstance();
@@ -187,15 +189,15 @@ public class DecryptKEK {
 			xmlCipher.init(XMLCipher.DECRYPT_MODE, null);
 			//postavlja se kljuc za dekriptovanje tajnog kljuca
 			xmlCipher.setKEK(privateKey);
-			
+
 			//trazi se prvi EncryptedData element
 			NodeList encDataList = doc.getElementsByTagNameNS("http://www.w3.org/2001/04/xmlenc#", "EncryptedData");
 			Element encData = (Element) encDataList.item(0);
-			
+
 			//dekriptuje se
 			//pri cemu se prvo dekriptuje tajni kljuc, pa onda njime podaci
-			xmlCipher.doFinal(doc, encData); 
-			
+			xmlCipher.doFinal(doc, encData);
+
 			return doc;
 		} catch (XMLEncryptionException e) {
 			e.printStackTrace();
@@ -205,7 +207,7 @@ public class DecryptKEK {
 			return null;
 		}
 	}
-	
-	
+
+
 
 }

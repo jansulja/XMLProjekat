@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
@@ -49,19 +50,19 @@ import org.xml.sax.SAXException;
 //Kriptuje tajni kljuc javnim kljucem
 //Kriptovani tajni kljuc se stavlja kao KeyInfo kriptovanog elementa
 public class EncryptKEK {
-	
+
 	private static final String IN_FILE = "./data/univerzitet.xml";
 	private static final String OUT_FILE = "./data/univerzitet_enc2.xml";
 	private static final String KEY_STORE_FILE = "C:/Users/Filipo/git/XMLProjekat/data/sgns.jks";
-	
+
     static {
     	//staticka inicijalizacija
         Security.addProvider(new BouncyCastleProvider());
         org.apache.xml.security.Init.init();
     }
-	
-    
-    
+
+
+
 	public Document testIt(String xml) {
 		//ucitava se dokument
 		Document doc = null;
@@ -92,10 +93,10 @@ public class EncryptKEK {
 			e.printStackTrace();
 		}
 		System.out.println("Encryption done");
-		
+
 		return doc;
 	}
-	
+
 	public static void printDocument(Document doc, OutputStream out) throws IOException, TransformerException {
 	    TransformerFactory tf = TransformerFactory.newInstance();
 	    Transformer transformer = tf.newTransformer();
@@ -105,11 +106,11 @@ public class EncryptKEK {
 	    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-	    transformer.transform(new DOMSource(doc), 
+	    transformer.transform(new DOMSource(doc),
 	         new StreamResult(new OutputStreamWriter(out, "UTF-8")));
 	}
-	
-	
+
+
 	public Document loadXMLFromString(String xml) throws Exception
 	{
 	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -119,8 +120,8 @@ public class EncryptKEK {
 
 	    return builder.parse(new ByteArrayInputStream(xml.getBytes()));
 	}
-	
-	
+
+
 	/**
 	 * Kreira DOM od XML dokumenta
 	 */
@@ -146,27 +147,28 @@ public class EncryptKEK {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Ucitava sertifikat is KS fajla
 	 * alias primer
 	 */
-	private Certificate readCertificate() {
+	public Certificate readCertificate() {
 		try {
 			//kreiramo instancu KeyStore
 			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//ucitavamo podatke
-			BufferedInputStream in = new BufferedInputStream(new FileInputStream(KEY_STORE_FILE));
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream("resource/sgns.jks");
+			BufferedInputStream in = new BufferedInputStream(is);
 			ks.load(in, "sgns".toCharArray());
-			
+
 			if(ks.isKeyEntry("iagns")) {
 				Certificate cert = ks.getCertificate("iagns");
 				return cert;
-				
+
 			}
 			else
 				return null;
-			
+
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 			return null;
@@ -185,11 +187,11 @@ public class EncryptKEK {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 	}
-	
+
 	/**
-	 * Snima DOM u XML fajl 
+	 * Snima DOM u XML fajl
 	 */
 	private void saveDocument(Document doc, String fileName) {
 		try {
@@ -198,10 +200,10 @@ public class EncryptKEK {
 
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();
-			
+
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(f);
-			
+
 			transformer.transform(source, result);
 
 			f.close();
@@ -222,27 +224,27 @@ public class EncryptKEK {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Generise tajni kljuc
 	 */
-	private SecretKey generateDataEncryptionKey() {
+	public SecretKey generateDataEncryptionKey() {
 
         try {
 			KeyGenerator keyGenerator = KeyGenerator.getInstance("DESede"); //Triple DES
 			return keyGenerator.generateKey();
-		
+
         } catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return null;
 		}
     }
-	
+
 	/**
 	 * Kriptuje sadrzaj prvog elementa odsek
 	 */
-	private Document encrypt(Document doc, SecretKey key, Certificate certificate) {
-		
+	public Document encrypt(Document doc, SecretKey key, Certificate certificate) {
+
 		try {
 			//cipher za kriptovanje tajnog kljuca,
 			//Koristi se Javni RSA kljuc za kriptovanje
@@ -250,12 +252,12 @@ public class EncryptKEK {
 		      //inicijalizacija za kriptovanje tajnog kljuca javnim RSA kljucem
 		    keyCipher.init(XMLCipher.WRAP_MODE, certificate.getPublicKey());
 		    EncryptedKey encryptedKey = keyCipher.encryptKey(doc, key);
-			
+
 		    //cipher za kriptovanje XML-a
 		    XMLCipher xmlCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
 		    //inicijalizacija za kriptovanje
 		    xmlCipher.init(XMLCipher.ENCRYPT_MODE, key);
-		    
+
 		    //u EncryptedData elementa koji se kriptuje kao KeyInfo stavljamo kriptovan tajni kljuc
 		    EncryptedData encryptedData = xmlCipher.getEncryptedData();
 	        //kreira se KeyInfo
@@ -265,15 +267,15 @@ public class EncryptKEK {
 		    keyInfo.add(encryptedKey);
 		    //postavljamo KeyInfo za element koji se kriptuje
 	        encryptedData.setKeyInfo(keyInfo);
-			
+
 			//trazi se element ciji sadrzaj se kriptuje
 			NodeList odseci = doc.getElementsByTagName("Akt");
 			Element odsek = (Element) odseci.item(0);
-			
+
 			xmlCipher.doFinal(doc, odsek, true); //kriptuje sa sadrzaj
-			
+
 			return doc;
-			
+
 		} catch (XMLEncryptionException e) {
 			e.printStackTrace();
 			return null;
@@ -282,7 +284,7 @@ public class EncryptKEK {
 			return null;
 		}
 	}
-	
 
-	
+
+
 }

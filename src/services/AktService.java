@@ -108,6 +108,8 @@ import model.view.Upit;
 import session.AktDaoLocal;
 import session.OdbornikDaoLocal;
 import util.DOMUtil;
+import xml.encryption.DecryptKEK;
+import xml.encryption.EncryptKEK;
 import xml.rdf.MetadataExtractor;
 import xml.rdf.RDFDataGenerator;
 import xml.rdf.RDFDataType;
@@ -166,19 +168,64 @@ public class AktService {
 		return json;
 
 	}
-	
-	
+
+
 	@POST
 	@Path("/textsearch")
-	
+
 	public String textSearch(String text){
 		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
 				Config.authType);
-		
-		
+
+
+		if (!text.isEmpty()){
+			// Initialize Jackson results handle
+
+
+
+
+
+				QueryManager queryMgr = client.newQueryManager();
+
+			// create a handle for the search results to be received as raw XML
+				StringHandle resultsHandle2 = new StringHandle();
+				SearchHandle resultsHandle3 = new SearchHandle();
+
+				StringQueryDefinition query2 = queryMgr.newStringDefinition();
+
+				query2.setCriteria(text);
+
+			// run the search
+				queryMgr.search(query2, resultsHandle3);
+				MatchDocumentSummary[] results = resultsHandle3.getMatchResults();
+
+				ArrayList<String> res = new ArrayList<String>();
+				for(MatchDocumentSummary r : results){
+					if(r.getUri().startsWith("/akti/"))
+						res.add(r.getUri().split("/akti/")[1].split(".xml")[0]);
+
+				}
+
+				String filter = getAktsByIDsQueryFilter(res);
+
+				if(filter.isEmpty())
+					return "[]";
+
+				SPARQLQueryManager sparqlQueryManager = client.newSPARQLQueryManager();
+				JacksonHandle resultsHandle = new JacksonHandle();
+				SPARQLQueryDefinition query = sparqlQueryManager.newQueryDefinition("SELECT *  WHERE { ?s ?p ?o " + filter + "  }");
+				resultsHandle = sparqlQueryManager.executeSelect(query, resultsHandle);
+				String jsonResult = handleResultsJSON(resultsHandle);
+
+				return jsonResult;
+
+			}
+
+
+
 
 			client.release();
-		
+
 		return "ok";
 	}
 
@@ -365,29 +412,6 @@ public class AktService {
 
 
 
-		if (!upit.getText().isEmpty()){
-		// Initialize Jackson results handle
-
-
-
-
-
-			QueryManager queryMgr = client.newQueryManager();
-
-		// create a handle for the search results to be received as raw XML
-			StringHandle resultsHandle2 = new StringHandle();
-			SearchHandle resultsHandle3 = new SearchHandle();
-
-			StringQueryDefinition query2 = queryMgr.newStringDefinition();
-
-			query2.setCriteria(upit.getText());
-
-		// run the search
-			queryMgr.search(query2, resultsHandle3);
-			MatchDocumentSummary[] results = resultsHandle3.getMatchResults();
-		// dump the XML results to the console
-			System.out.println(results[0].getPath());
-		}
 
 
 		client.release();
@@ -415,6 +439,35 @@ public class AktService {
 			String subject = row.path("s").path("value").asText();
 			amandmani.add(subject.split("akt/")[1]);
 		}
+
+		if(!amandmani.isEmpty()){
+
+
+			String filter="FILTER(";
+			for(int i=0;i<amandmani.size(); i++){
+
+				filter += "REGEX(STR(?s),\""+ amandmani.get(i) +"\") ";
+				if(i < amandmani.size()-1){
+
+					filter += "|| ";
+
+				}else{
+
+					filter += ") ";
+
+
+				}
+
+			}
+			return filter;
+
+		}
+
+		return "";
+
+	}
+
+	private String getAktsByIDsQueryFilter(ArrayList<String> amandmani) {
 
 		if(!amandmani.isEmpty()){
 
@@ -663,10 +716,55 @@ public class AktService {
 		String xmlRDFData = addRDFDataToXML(DOMUtility.toString(document), id[3]);
 
 		insertMetadata(xmlRDFData, id[3]);
+		if (id[7].equals("USVOJEN_U_CELINI")) {
+			posalji(id[3]);
 
+		}
 		log.info("asd" + id[3] + id[7]);
 
 		return "[]";
+	}
+	@POST
+	@Path("/posalji")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_JSON)
+
+	public void posalji(String id){
+		//log.info(upit.toString());
+		String putanja = new String("/akti/" +id + ".xml");
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password, Config.authType);
+
+		// create a manager for XML documents
+		XMLDocumentManager docMgr = client.newXMLDocumentManager();
+
+		// create a handle to receive the document content
+		DOMHandle handle = new DOMHandle();
+
+		// read the document content
+		docMgr.read(putanja, handle);
+		System.out.println(handle);
+
+		// access the document content
+		Document document = handle.get();
+		System.out.println(document);
+		EncryptKEK klasaEnkripcije = new EncryptKEK() ;
+		//System.out.println("-------------------------------");
+
+		Document encDoc = null;
+		try {
+			encDoc = klasaEnkripcije.encrypt(klasaEnkripcije.loadXMLFromString(handle.toString()) ,klasaEnkripcije.generateDataEncryptionKey(), klasaEnkripcije.readCertificate());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.println("enkriptovan-------------------------------");
+		System.out.println(saveDocument(encDoc));
+
+		System.out.println("enkriptovan-------------------------------");
+		ArhivaService arhiva = new ArhivaService ();
+		arhiva.arhivirajAmadman(encDoc, id);
+
 	}
 
 	@POST
