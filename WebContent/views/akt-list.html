@@ -7,7 +7,12 @@
 				<h4 class="panel-title">
 					<button type="button" class="btn btn-default" data-toggle="collapse" href="#collapse1"
 						aria-label="Left Align">
-						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga</span>
+						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga po metapodacima</span>
+					</button>
+
+					<button type="button" class="btn btn-default" data-toggle="collapse" href="#collapse2"
+						aria-label="Left Align">
+						<span class="glyphicon glyphicon-search" aria-hidden="true">  Pretraga po tekstu</span>
 					</button>
 					
 					<span ng-show="dalJeOdbornik()">
@@ -17,6 +22,29 @@
 					</span>
 				</h4>
 			</div>
+			
+			<div  id="collapse2" class="panel-collapse collapse">
+				<div class="panel-body">
+					<div>
+						<form>
+											<div class="form-group">
+								Tekst u aktu:<br> <input type="text" ng-model="Upit.Text">
+							</div>
+						</form>
+					<div>
+						<button type="button" class="btn btn-default btn-lg"
+							ng-click="searchAktovePoTextu()">
+							<span class="glyphicon glyphicon-submit" aria-hidden="true"></span>
+							Pretrazi aktove po tekstu
+						</button>
+
+					</div>
+					</div>
+					<div class="panel-footer"></div>
+					</div>
+					</div>
+
+
 			<div  id="collapse1" class="panel-collapse collapse">
 				<div class="panel-body">
 
@@ -64,28 +92,13 @@
 								</div>
 								<br>
 							</div>
-							<div class="form-group">
-								Datum_usvajanja:<br>
-								<div class="input-group">
-									<input type="text" class="form-control"
-										datepicker-popup="dd.MM.yyyy." ng-model="Upit.DatumUsvajanja"
-										is-open="dateOpened3" close-text="Close" /> <span
-										class="input-group-btn">
-										<button type="button" class="btn btn-default"
-											ng-click="openDatepicker3($event, 'dateOpened3')">
-											<i class="glyphicon glyphicon-calendar"></i>
-										</button>
-									</span>
-								</div>
-								<br>
-							</div>
+
+
 							<div class="form-group">
 								Predlozio:<br> <input type="text" ng-model="Upit.Predlagac">
 							</div>
 
-							<div class="form-group">
-								Tekst u aktu:<br> <input type="text" ng-model="Upit.Text">
-							</div>
+							
 					</div>
 					</form>
 					<div>

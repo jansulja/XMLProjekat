@@ -166,6 +166,21 @@ public class AktService {
 		return json;
 
 	}
+	
+	
+	@POST
+	@Path("/textsearch")
+	
+	public String textSearch(String text){
+		DatabaseClient client = DatabaseClientFactory.newClient(Config.host, Config.port, Config.user, Config.password,
+				Config.authType);
+		
+		
+
+			client.release();
+		
+		return "ok";
+	}
 
 	@POST
 	@Path("/search")
